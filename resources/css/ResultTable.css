@@ -1,0 +1,22 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+th {
+    color: black;
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+.arrow {
+    font-size: 14px;
+}
+.chart-link {
+    text-decoration: none;
+    cursor: pointer;
+}

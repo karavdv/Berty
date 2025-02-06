@@ -1,0 +1,196 @@
+.navbar {
+    width: 50%;
+    margin: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    color:  #fff; ;
+    border-radius: 3rem;
+    opacity: 0.8;
+    transition: all 0.4s ease-in-out;
+    background: #ffffff0f;
+    backdrop-filter: blur(16px);
+    /* Pas de blur-intensiteit aan */
+    -webkit-backdrop-filter: blur(16px);
+    /* Voor Safari-ondersteuning */
+}
+
+
+
+/* Startpositie navbar: onderaan het scherm */
+.navbar-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Nieuwe positie navbar: bovenaan als er gescrold wordt */
+.navbar-top {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.navbar-logo {
+    align-items: center;
+    font-size: 2.5rem;
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+}
+
+
+
+/* Hamburger Menu Styling */
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    transition: 0.3s;
+}
+
+/* Active hamburger (maakt kruisje) */
+.bar.open:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.bar.open:nth-child(2) {
+    opacity: 0;
+}
+
+.bar.open:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mobile menu (standaard verborgen) */
+.navbar-links {
+    position: absolute;
+    padding: 0;
+    left: 70%;
+    width: 50%;
+    background-color: #333;
+    display: flex;
+    justify-items: center;
+    flex-direction: column;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    border-radius: 3rem;
+    transform: translateY(-50%);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Toon menu als open */
+.navbar-links.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+/* Menu opent naar BOVEN als navbar onderaan is */
+.navbar-bottom .navbar-links {
+    bottom: 60px;
+    /* Hoogte boven de navbar */
+    transform: translateX(-50%) translateY(10px);
+}
+
+/* Menu opent naar BENEDEN als navbar bovenaan is */
+.navbar-top .navbar-links {
+    top: 60px;
+    /* Hoogte onder de navbar */
+    transform: translateX(-50%) translateY(-10px);
+}
+
+/* Menu-items */
+.navbar-links li {
+    list-style: none;
+    padding: 15px 0;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.25rem;
+}
+
+.navbar-links a:hover {
+    color: #f4a261;
+}
+
+.navbar-links a.active {
+    font-weight: bold;
+    color: #3498db;
+}
+
+
+/* Desktop weergave: Standaard navigatie tonen */
+@media screen and (min-width: 768px) {
+    .hamburger {
+        display: none;
+    }
+
+    .navbar-links {
+        flex-direction: row;
+        justify-content: flex-end;
+        left: auto;
+        top: auto;
+        bottom: auto;
+        width: auto;
+        align-items: center;
+        /* Zorgt voor correcte verticale uitlijning */
+        opacity: 1;
+        /* Zorg dat de links zichtbaar zijn */
+        visibility: visible;
+        /* Zorg dat de links niet verborgen zijn */
+        transform: none;
+        /* Reset transform van mobile */
+        position: relative;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+        /* Verwijder achtergrondkleur van mobile menu */
+        transform: none;
+    }
+
+
+    /* 🚀 Zorg ervoor dat mobile dropdown-stijlen niet van toepassing zijn */
+    .navbar-links.dropdown-up,
+    .navbar-links.dropdown-down {
+        position: static;
+        transform: none;
+        top: auto;
+        bottom: auto;
+    }
+
+    .navbar-links li {
+        list-style: none;
+    }
+
+    .navbar-links a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+    }
+
+    .navbar-links a:hover {
+        color: #f4a261;
+    }
+}
