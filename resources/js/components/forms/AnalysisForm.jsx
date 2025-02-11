@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSignals } from "@preact/signals-react/runtime";
-import { results, loading, errors } from "../../components/Signals.js";
+import { selectedCurrency, results, loading, errors } from "../../components/Signals.js";
+import { CurrencySelector } from "../forms/utils/CurrencySelector";
+import { handleNumberInput } from "../forms/utils/handleNumberInput.js";
 import '../../../css/Forms.css';
 
 export const AnalysisForm = () => {
     useSignals();
-    const [currency, setCurrency] = useState('');
     const [numberMovements, setNumberMovements] = useState('');
     const [change, setChange] = useState('');
 
@@ -13,8 +14,8 @@ export const AnalysisForm = () => {
         let formErrors = {};
 
         // Validatie voor currency 
-        if (!currency) {
-            formErrors.currency = 'Currency must be chosen.';
+        if (!selectedCurrency.value) {
+            formErrors.selectedCurrency = 'Currency must be chosen.';
         }
 
         // Validatie voor numberMovements (moet een integer en minstens 1 zijn )
@@ -77,7 +78,7 @@ export const AnalysisForm = () => {
 
         loading.value = true;
         errors.value = {}; // Reset eventuele eerdere fouten
-        results.value = []; 
+        results.value = [];
 
         try {
 
@@ -89,7 +90,7 @@ export const AnalysisForm = () => {
                     'Content-Type': 'application/json',
                     /*'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),// Verkrijg het CSRF-token uit de meta-tag in de blade-view*/
                 },
-                body: JSON.stringify({ currency, numberMovements, change })
+                body: JSON.stringify({ currency: selectedCurrency.value, numberMovements, change })
             });
 
             if (!startResponse.ok) {
@@ -101,7 +102,7 @@ export const AnalysisForm = () => {
         } catch (err) {
             errors.value = { global: err.message };
             loading.value = false;
-        } 
+        }
     };
 
 
@@ -111,21 +112,7 @@ export const AnalysisForm = () => {
             <div className='analysis form-wrapper'>
                 <form className="analysis form" onSubmit={startAnalysis}>
                     {/* Currency Input */}
-                    <div className="analysis form-group">
-                        <label htmlFor="currency">What currency do you use</label>
-                        <select
-                            id="currency"
-                            name="currency"
-                            value={currency || ""} // Zorgt voor een veilige standaardwaarde
-                            onChange={(e) => setCurrency(e.target.value)}
-                        >
-                            <option value="" disabled>Select currency</option>
-                            <option value="EUR">EUR</option>
-                            <option value="USD">USD</option>
-                        </select>
-                        {errors.value?.currency && <p className="error-message">{errors.value.currency}</p>}
-                    </div>
-
+                    <CurrencySelector />
 
                     <span className='small'>A trading bot works best for a currency pair that is moving sideways. This means it often goes up and down, creating many opportunities to trade. Below you can choose how many times you want a currency pair to go up AND down for a certain percentage in the last 30 days. </span>
 
@@ -134,6 +121,7 @@ export const AnalysisForm = () => {
                         <label htmlFor="numberMovements">Number of ups and downs</label>
                         <input
                             type="number"
+                            inputMode="decimal"
                             id="numberMovements"
                             name="numberMovements"
                             placeholder="How many ups and downs should a currency pair have made in the last 30 days?"
@@ -148,11 +136,13 @@ export const AnalysisForm = () => {
                         <label htmlFor="change">Change in %</label>
                         <input
                             type="number"
+                            step="any"
+                            inputMode="decimal"
                             id="change"
                             name="change"
                             placeholder="The minimum % the up&down movements need to be"
                             value={change}
-                            onChange={(e) => setChange(e.target.value)}
+                            onChange={handleNumberInput(setChange)}
                         />
                         {errors.value.change && <p className="error-message">{errors.value.change}</p>}
                     </div>

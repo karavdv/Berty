@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use WebSocket\Client as WebSocketClient;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
@@ -73,22 +74,7 @@ class KrakenApiServicePrivate
         $hmac = hash_hmac('sha512', $endpoint . $hash, base64_decode($this->apiSecret), true);
 
         $signature = base64_encode($hmac);
-        $this->logToFile('Generated Signature', [
-            'Endpoint' => $endpoint,
-            'Nonce' => $nonce,
-            'Post Data' => $postData,
-            'Signature' => $signature,
-        ]);
 
         return $signature;
     }
-
-    // Basic file-based logging mechanism
-    protected function logToFile($message, $data)
-    {
-        $logMessage = '[' . date('Y-m-d H:i:s') . '] ' . $message . ': ' . json_encode($data) . PHP_EOL;
-        file_put_contents(__DIR__ . '/kraken_api.log', $logMessage, FILE_APPEND);
-    }
-
-    }
-
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { handleNumberInput } from "../forms/utils/handleNumberInput.js";
 import '../../../css/Forms.css';
 
 export const GoalForm = () => {
@@ -60,13 +61,15 @@ export const GoalForm = () => {
                     {/* Capital Input */}
                     <div className="goal form-group">
                         <label htmlFor="capital">Starting capital</label>
-                        <input 
-                            type="number" 
-                            id="capital" 
-                            name="capital" 
+                        <input
+                            type="number"
+                            step="any"
+                            inputMode="decimal"
+                            id="capital"
+                            name="capital"
                             placeholder="The capital you start investing with"
                             value={capital}
-                            onChange={(e) => setCapital(e.target.value)}
+                            onChange={handleNumberInput(setCapital)}
                         />
                         {errors.capital && <p className="error-message">{errors.capital}</p>}
                     </div>
@@ -74,10 +77,11 @@ export const GoalForm = () => {
                     {/* Days Input */}
                     <div className="goal form-group">
                         <label htmlFor="days">Number of trading days per week</label>
-                        <input 
-                            type="number" 
-                            id="days" 
-                            name="days" 
+                        <input
+                            type="number"
+                            inputMode="decimal"
+                            id="days"
+                            name="days"
                             placeholder="How many days do you intend to trade per week?"
                             value={days}
                             onChange={(e) => setDays(e.target.value)}
@@ -89,13 +93,15 @@ export const GoalForm = () => {
                     <div className="goal form-group">
                         <label htmlFor="margin">Intended profit margin</label>
                         <span className='small'>Keep it real ;)</span>
-                        <input 
+                        <input
                             type="number"
+                            step="any"
+                            inputMode="decimal"
                             id="margin"
                             name="margin"
                             placeholder="The average profit margin you set for trades"
                             value={margin}
-                            onChange={(e) => setMargin(e.target.value)}
+                            onChange={handleNumberInput(setMargin)}
                         />
                         {errors.margin && <p className="error-message">{errors.margin}</p>}
                     </div>

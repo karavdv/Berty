@@ -42,7 +42,7 @@ export const Navbar = () => {
                 <ul className={`navbar-links ${isOpen ? 'open' : ''} ${isScrolled ? 'dropdown-down' : 'dropdown-up'}`}>
                     <li><NavLink to="/" onClick={toggleMenu}>Home</NavLink></li>
                     <li><NavLink to="/analyse" onClick={toggleMenu}>Analyse</NavLink></li>
-                    <li><NavLink to="/contact" onClick={toggleMenu}>Contact</NavLink></li>
+                    <li><NavLink to="/tradebot" onClick={toggleMenu}>Tradebot</NavLink></li>
                 </ul>
             </div>
         </nav>

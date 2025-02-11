@@ -24,13 +24,19 @@ class MarketAnalyzer
         $this->changeRequired = $changeRequired;
     }
 
-    public function getEuroPairs( string $currency): array
+    public function getCurrencyPairs( string $currency): array
     {
-        Log::info('Currency ontvangen in getEuroPairs', ['currency' => $currency]);
+        Log::info('Currency ontvangen in getCurrencyPairs', ['currency' => $currency]);
 
         $response = $this->apiConnection->publicRequest('AssetPairs', ['info' => 'leverage']);
         $pairs = $response['result'] ?? [];
         $filteredPairs = [];
+         // 🔹 Controleer welke valutaparen de API teruggeeft
+    Log::info('Opgehaalde valutaparen (volledige lijst):', ['pairs' => array_keys($pairs)]);
+
+        if ($currency === 'BTC') {
+            $currency = 'XBT';
+        }
 
         foreach (array_keys($pairs) as $pair) {
             if (str_ends_with($pair, $currency)) {
@@ -91,7 +97,7 @@ class MarketAnalyzer
     {
         Log::info('findQualifiedPairs() gestart', ['currency' => $currency]);
 
-        $pairs = $this->getEuroPairs($currency);
+        $pairs = $this->getCurrencyPairs($currency);
         Log::info('Aantal paren opgehaald:', ['count' => count($pairs)]);
 
         $promises = [];

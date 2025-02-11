@@ -1,0 +1,29 @@
+.tradeBot-overview li {
+    list-style: none;
+    margin-bottom: 5px;
+
+}
+
+.tradeBot-overview p {
+    margin: 5px;
+}
+
+.tradeBot-overview button {
+    background-color: #f4a261;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.tradeBot-overview button:hover {
+    background-color: #264653;
+}
+
+.error-message {
+    color: rgb(255, 255, 255);
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
