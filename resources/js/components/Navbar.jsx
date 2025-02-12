@@ -43,6 +43,8 @@ export const Navbar = () => {
                     <li><NavLink to="/" onClick={toggleMenu}>Home</NavLink></li>
                     <li><NavLink to="/analyse" onClick={toggleMenu}>Analyse</NavLink></li>
                     <li><NavLink to="/tradebot" onClick={toggleMenu}>Tradebot</NavLink></li>
+                    <li><NavLink to="/dashboard" onClick={toggleMenu}>Dashboard</NavLink></li>
+
                 </ul>
             </div>
         </nav>

@@ -6,6 +6,7 @@ import { Home } from './Home.jsx';
 import { Navbar } from './Navbar.jsx';
 import { Analyse } from './analyzer/Analyse.jsx';
 import { TradeBot } from './tradeBot/TradeBot.jsx';
+import { TradeBotDashboard } from './dashboard/TradeBotDashboard.jsx';
 
 
 export const Main = () => {
@@ -15,8 +16,8 @@ export const Main = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/analyse" element={<Analyse />} />
-                <Route path="/about" element={<h1>About Page</h1>} />
                 <Route path="/tradebot" element={<TradeBot />} />
+                <Route path="/dashboard" element={<TradeBotDashboard />} />
             </Routes>
         </Router>
     );
