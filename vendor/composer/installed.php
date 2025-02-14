@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '2de998802295a38693fef2ada719f672e6557e8d',
+        'reference' => 'c6d084968f2eda455477a42dbbaa288b82d0acda',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -67,6 +67,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'doctrine/dbal' => array(
+            'pretty_version' => '4.2.2',
+            'version' => '4.2.2.0',
+            'reference' => '19a2b7deb5fe8c2df0ff817ecea305e50acb62ec',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../doctrine/dbal',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'doctrine/deprecations' => array(
             'pretty_version' => '1.1.4',
             'version' => '1.1.4.0',
@@ -74,7 +83,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../doctrine/deprecations',
             'aliases' => array(),
-            'dev_requirement' => true,
+            'dev_requirement' => false,
         ),
         'doctrine/inflector' => array(
             'pretty_version' => '2.0.10',
@@ -433,7 +442,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '2de998802295a38693fef2ada719f672e6557e8d',
+            'reference' => 'c6d084968f2eda455477a42dbbaa288b82d0acda',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

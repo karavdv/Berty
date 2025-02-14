@@ -16,7 +16,7 @@ class CreateTradingBotsTable extends Migration
             $table->decimal('drop_threshold', 5, 2);
             $table->decimal('profit_threshold', 5, 2);
             $table->decimal('start_buy', 15, 8);
-            $table->decimal('max_buys', 15, 8);
+            $table->decimal('budget', 15, 8);
             $table->boolean('accumulate')->default(false);
             $table->decimal('top_edge', 5, 2)->nullable();
             $table->decimal('stop_loss', 5, 2)->nullable();

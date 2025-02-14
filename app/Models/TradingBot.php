@@ -13,7 +13,7 @@ class TradingBot extends Model
         'drop_threshold',
         'profit_threshold',
         'start_buy',
-        'max_buys',
+        'budget',
         'accumulate',
         'top_edge',
         'stop_loss',

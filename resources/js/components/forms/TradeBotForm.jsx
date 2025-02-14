@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSignals } from "@preact/signals-react/runtime";
-import { selectedCurrency, selectedPair, availablePairs, tradeSize, drop, profit, startBuy, maxBuys, accumulate, topEdge, stopLoss, showOverviewPage, errors } from "../../components/Signals.js";
+import { selectedCurrency, selectedPair, availablePairs, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, stopLoss, showOverviewPage, errors } from "../../components/Signals.js";
 import { CurrencySelector } from "../forms/utils/CurrencySelector";
 import { CurrencyPairSelector } from "../forms/utils/CurrencyPairSelector.jsx";
 import { handleNumberInput } from "../forms/utils/handleNumberInput.js";
@@ -41,8 +41,8 @@ export const TradeBotForm = () => {
         if (!startBuy.value || startBuy.value <= 0) {
             formErrors.startBuy = "Enter a valid starting price.";
         }
-        if (!maxBuys.value || maxBuys.value <= 0) {
-            formErrors.maxBuys = "Enter a valid budget amount.";
+        if (!budget.value || budget.value <= 0) {
+            formErrors.budget = "Enter a valid budget amount.";
         }
         if (topEdge.value && topEdge.value < 0) {
             formErrors.topEdge = "Top edge percentage cannot be negative.";
@@ -141,19 +141,19 @@ export const TradeBotForm = () => {
 
                     {/* budget Input */}
                     <div className="analysis form-group">
-                        <label htmlFor="maxBuys">What is the budget for the bot?</label>
+                        <label htmlFor="budget">What is the budget for the bot?</label>
                         <span className='small'>This is the maximum amount the bot can have in open trades. Make this a meervoud of your trade amount. By example; trade is €10, bot budget is €100. The bot can make 10 buys without making a sell. After that it will wait for a sell before making another buy. </span>
                         <input
                             type="number"
                             step="any"
                             inputMode="decimal"
-                            id="maxBuys"
-                            name="maxBuys"
+                            id="budget"
+                            name="budget"
                             placeholder="The maximum amount you want the bot to be able to buy without making sales."
-                            value={maxBuys.value}
-                            onChange={handleNumberInput((val) => (maxBuys.value = val))}
+                            value={budget.value}
+                            onChange={handleNumberInput((val) => (budget.value = val))}
                         />
-                        {errors.value?.maxBuys && <p className="error-message">{errors.value.maxBuys}</p>}
+                        {errors.value?.budget && <p className="error-message">{errors.value.budget}</p>}
                     </div>
 
                     {/* accumulative budget Input */}

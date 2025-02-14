@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\TradingController;
 use App\Http\Controllers\TradingFormController;
 use App\Http\Controllers\TradingBotController;
+use App\Http\Controllers\PriceUpdateController;
+
 
 
 
@@ -36,8 +38,13 @@ Route::get('/analyze/results', function () {
 Route::get('/currency-pairs/{currency}', [TradingFormController::class, 'fetchCurrencyPairs']);
 
 /* trading */
+Route::post('/trading-bot/start', [TradingBotController::class, 'startBot']);
+
 Route::post('/trading/start', [TradingController::class, 'startBot']);
 Route::get('/trading/dry-run-orders', [TradingController::class, 'getDryRunTrades']);
+
+Route::post('/price-update', [PriceUpdateController::class, 'store']);
+
 
 Route::get('/trading/open-orders', [TradingController::class, 'getOpenOrders']);
 Route::post('/trading/cancel', [TradingController::class, 'cancelOrder']);

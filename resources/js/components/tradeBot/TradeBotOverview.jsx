@@ -1,7 +1,8 @@
 import React from "react";
 import { useSignals } from "@preact/signals-react/runtime";
-import { selectedPair, tradeSize, drop, profit, startBuy, maxBuys, accumulate, topEdge, stopLoss, showOverviewPage} from "../../components/Signals.js";
+import { selectedPair, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, stopLoss, showOverviewPage} from "../../components/Signals.js";
 import '../../../css/TradeBotOverview.css';
+import { StartBotButton } from "./StartBotButton.jsx";
 
 export const TradeBotOverview = () => {
     useSignals();
@@ -21,18 +22,13 @@ export const TradeBotOverview = () => {
                 <li>Buy at Drop: {drop.value}%</li>
                 <li>Sell at Profit: {profit.value}%</li>
                 <li>Starting Price: €{startBuy.value}</li>
-                <li>Max Budget: €{maxBuys.value}</li>
+                <li>Max Budget: €{budget.value}</li>
                 <li>Accumulate Profit: {accumulate.value ? "Yes" : "No"}</li>
                 <li>Stay Below Top: {topEdge.value}%</li>
                 <li>Stop Loss: {stopLoss.value || "None"}</li>
             </ul>
 
-            <button className="confirm-button" onClick={() => {
-                showOverviewPage.value = false;
-                console.log("Trading bot started with the above settings!");
-            }}>
-            Confirm & Start Bot
-            </button>
+            < StartBotButton/>
         </section>
     );
 };

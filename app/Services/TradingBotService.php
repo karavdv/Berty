@@ -15,7 +15,7 @@ class TradingBotService
     protected float $dropThreshold;      // Bijvoorbeeld 2 voor 2%
     protected float $profitThreshold;    // Bijvoorbeeld 3 voor 3%
     protected float $startBuy;
-    protected float $maxBuys;            // Het maximum budget voor open trades
+    protected float $budget;            // Het maximum budget voor open trades
     protected bool $accumulate;
     protected ?float $topEdge;
     protected ?float $stopLoss;
@@ -39,7 +39,7 @@ class TradingBotService
         float $dropThreshold,
         float $profitThreshold,
         float $startBuy,
-        float $maxBuys,
+        float $budget,
         bool $accumulate = false,
         ?float $topEdge = null,
         ?float $stopLoss = null,
@@ -51,7 +51,7 @@ class TradingBotService
         $this->dropThreshold = $dropThreshold;
         $this->profitThreshold = $profitThreshold;
         $this->startBuy = $startBuy;
-        $this->maxBuys = $maxBuys;
+        $this->budget = $budget;
         $this->accumulate = $accumulate;
         $this->topEdge = $topEdge;
         $this->stopLoss = $stopLoss;
@@ -64,22 +64,17 @@ class TradingBotService
         $this->bot = $bot;
     }
 
-    public function stopBot(): void
-{
-    $this->bot ['status'] = "stopped"; // Als je een while-loop gebruikt, zorg dan dat deze flag de loop stopt
-    Log::info("Bot is gestopt.");
-}
-
+   
     /**
      * Verwerkt een nieuwe prijsupdate. Deze methode wordt event-driven aangeroepen (bijvoorbeeld via Redis Pub/Sub).
      */
     public function processPriceUpdate(float $currentPrice): void
     {
+        Log::info("Prijsupdate ontvangen voor {$this->pair}: €{$currentPrice}");
 
             // Controleer of de bot als 'stopped' is gemarkeerd in de database
     if ($this->bot && $this->bot->status === 'stopped') {
         Log::info("Bot status is 'stopped'. Stoppen met verwerken.");
-        $this->stopBot();
         return;
     }
         $this->lastPrice = $currentPrice;
@@ -106,7 +101,7 @@ class TradingBotService
         }
 
         // Vervolgens: Als er nog budget is voor een nieuwe koop, controleer de cumulatieve drop.
-        if ($this->openTradeVolume + $this->tradeSize <= $this->maxBuys) {
+        if ($this->openTradeVolume + $this->tradeSize <= $this->budget) {
             $cumulativeDrop = (($this->referencePrice - $currentPrice) / $this->referencePrice) * 100;
             Log::info("Cumulatieve drop: " . round($cumulativeDrop, 2) . "% (ReferencePrice: €{$this->referencePrice}, Huidige prijs: €{$currentPrice})");
             if ($cumulativeDrop >= $this->dropThreshold) {
