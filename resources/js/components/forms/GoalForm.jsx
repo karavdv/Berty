@@ -71,7 +71,7 @@ export const GoalForm = () => {
                             value={capital}
                             onChange={handleNumberInput(setCapital)}
                         />
-                        {errors.capital && <p className="error-message">{errors.capital}</p>}
+                        {errors?.capital && <p className="error-message">{errors.capital}</p>}
                     </div>
 
                     {/* Days Input */}
@@ -86,7 +86,7 @@ export const GoalForm = () => {
                             value={days}
                             onChange={(e) => setDays(e.target.value)}
                         />
-                        {errors.days && <p className="error-message">{errors.days}</p>}
+                        {errors?.days && <p className="error-message">{errors.days}</p>}
                     </div>
 
                     {/* Margin Input */}
@@ -103,7 +103,7 @@ export const GoalForm = () => {
                             value={margin}
                             onChange={handleNumberInput(setMargin)}
                         />
-                        {errors.margin && <p className="error-message">{errors.margin}</p>}
+                        {errors?.margin && <p className="error-message">{errors.margin}</p>}
                     </div>
 
                     {/* Submit Button */}

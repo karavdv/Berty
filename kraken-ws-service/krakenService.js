@@ -1,10 +1,10 @@
 import WebSocket from 'ws';
 import dotenv from 'dotenv';
-import axios from 'axios';
+import {axios} from 'axios';
 
 dotenv.config();
 
-const krakenWsUrl = process.env.KRKEN_WS_URL || 'wss://ws.kraken.com';
+const krakenWsUrl = process.env.KRAKEN_WS_URL || 'wss://ws.kraken.com';
 
 /**
  * Start een WebSocket-verbinding met Kraken en abonneer je op de ohlc.
@@ -43,9 +43,10 @@ export function subscribeToPair(pair, onMessageCallback, interval = 1) { // Inte
                 // Stuur de prijs (close) naar Laravel API
                 axios.post('http://127.0.0.1:8000/api/price-update', {
                     pair: pair,
-                    price: close // Stuur de slotprijs
+                    price: close, // Stuur de slotprijs
+                    botId: subscriptions[pair]?.bots || []
                 }).then(() => {
-                    console.log(`✅ OHLC prijsupdate voor ${pair} succesvol verzonden naar backend.`);
+                    console.log(`📡 Prijsupdate voor ${pair}:`, price);
                 }).catch(error => {
                     console.error("❌ Fout bij verzenden OHLC update naar Laravel:", error);
                 });

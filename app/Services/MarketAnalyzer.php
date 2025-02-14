@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Services;
+
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Promise\Utils;
+use App\Services\CurrencyPairs;
 
 class MarketAnalyzer
 {
@@ -14,7 +16,6 @@ class MarketAnalyzer
     public function __construct(KrakenApiServicePublic $apiConnection)
     {
         $this->apiConnection = $apiConnection;
-
     }
 
     public function setup(string $currency, int $numberMovements, float $changeRequired): void
@@ -24,38 +25,15 @@ class MarketAnalyzer
         $this->changeRequired = $changeRequired;
     }
 
-    public function getCurrencyPairs( string $currency): array
-    {
-        Log::info('Currency ontvangen in getCurrencyPairs', ['currency' => $currency]);
-
-        $response = $this->apiConnection->publicRequest('AssetPairs', ['info' => 'leverage']);
-        $pairs = $response['result'] ?? [];
-        $filteredPairs = [];
-         // 🔹 Controleer welke valutaparen de API teruggeeft
-    Log::info('Opgehaalde valutaparen (volledige lijst):', ['pairs' => array_keys($pairs)]);
-
-        if ($currency === 'BTC') {
-            $currency = 'XBT';
-        }
-
-        foreach (array_keys($pairs) as $pair) {
-            if (str_ends_with($pair, $currency)) {
-                $filteredPairs[] = $pair;
-            }
-        }
-    
-        return $filteredPairs;
-    }
-
     public function analyzePair(string $pair, array $data, $numberMovements, $changeRequired): ?array
     {
         $ohlcData = $data['result'][$pair] ?? null;
-    
+
         if (!is_array($ohlcData) || empty($ohlcData)) {
             Log::warning("Geen geldige OHLC data voor paar: $pair");
             return null;
-        }        
-    
+        }
+
         $changes = $this->calculateChanges($ohlcData, $changeRequired);
         if ($changes['rises'] > $numberMovements && $changes['declines'] > $numberMovements) {
             return array_merge(['pair' => $pair], $changes);
@@ -68,36 +46,37 @@ class MarketAnalyzer
     {
         $rises = 0;
         $declines = 0;
-        $startValue = (float)$data[0][1];// Start met de Open van de eerste candle
+        $startValue = (float)$data[0][1]; // Start met de Open van de eerste candle
 
         foreach ($data as $candle) {
             $currentClose = (float)$candle[4];
 
             if ($currentClose <= 0 || $startValue <= 0) {
-                continue;// Sla ongeldige candles over
+                continue; // Sla ongeldige candles over
             }
 
             $change = (($currentClose - $startValue) / $startValue) * 100;
 
             if ($change >= $changeRequired) {
                 $rises++;
-                $startValue = $currentClose;// Reset bij een stijging
+                $startValue = $currentClose; // Reset bij een stijging
             } elseif ($change <= -$changeRequired) {
                 $declines++;
-                $startValue = $currentClose;// Reset bij een daling
+                $startValue = $currentClose; // Reset bij een daling
             }
         }
 
 
-            return ['rises' => $rises, 'declines' => $declines];
-
+        return ['rises' => $rises, 'declines' => $declines];
     }
 
     public function findQualifiedPairs(string $currency, int $numberMovements, float $changeRequired): \Generator
     {
         Log::info('findQualifiedPairs() gestart', ['currency' => $currency]);
-
-        $pairs = $this->getCurrencyPairs($currency);
+        
+        $currencyPairs = new CurrencyPairs($this->apiConnection);
+        $pairs = $currencyPairs->getPairsForCurrency($currency);
+        
         Log::info('Aantal paren opgehaald:', ['count' => count($pairs)]);
 
         $promises = [];
@@ -106,7 +85,7 @@ class MarketAnalyzer
         foreach ($pairs as $pair) {
             $promises[$pair] = $this->apiConnection->publicRequest('OHLC', ['pair' => $pair, 'interval' => 60]);
         }
-    
+
         // Wacht tot alle promises zijn vervuld
         $responses = Utils::settle($promises)->wait();
 
@@ -114,7 +93,7 @@ class MarketAnalyzer
             Log::error('Geen responses ontvangen voor valutaparen.');
             return;
         }
-    
+
         // Verwerk de resultaten
         foreach ($responses as $pair => $response) {
             if ($response['state'] === 'fulfilled') {
@@ -128,5 +107,4 @@ class MarketAnalyzer
             }
         }
     }
-    
 }

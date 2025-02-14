@@ -9,10 +9,7 @@ use App\Http\Controllers\TradingController;
 use App\Http\Controllers\TradingFormController;
 use App\Http\Controllers\TradingBotController;
 use App\Http\Controllers\PriceUpdateController;
-
-
-
-
+use App\Services\CurrencyPairs;
 
 Route::post('/goal', [CalculateGoalController::class, 'calculateInvestment']);
 
@@ -35,7 +32,7 @@ Route::get('/analyze/results', function () {
 /* routes trading */
 
 /* form */
-Route::get('/currency-pairs/{currency}', [TradingFormController::class, 'fetchCurrencyPairs']);
+Route::get('/currency-pairs/{currency}', [CurrencyPairs::class, 'getPairsForCurrency']);
 
 /* trading */
 Route::post('/trading-bot/start', [TradingBotController::class, 'startBot']);

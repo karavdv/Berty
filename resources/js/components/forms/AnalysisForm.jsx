@@ -88,7 +88,6 @@ export const AnalysisForm = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    /*'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),// Verkrijg het CSRF-token uit de meta-tag in de blade-view*/
                 },
                 body: JSON.stringify({ currency: selectedCurrency.value, numberMovements, change })
             });
@@ -125,10 +124,10 @@ export const AnalysisForm = () => {
                             id="numberMovements"
                             name="numberMovements"
                             placeholder="How many ups and downs should a currency pair have made in the last 30 days?"
-                            value={numberMovements}
+                            value={numberMovements ?? ''}
                             onChange={(e) => setNumberMovements(e.target.value)}
                         />
-                        {errors.value.numberMovements && <p className="error-message">{errors.value.numberMovements}</p>}
+                        {errors.value?.numberMovements && <p className="error-message">{errors.value.numberMovements}</p>}
                     </div>
 
                     {/* CChanges Input */}
@@ -144,7 +143,7 @@ export const AnalysisForm = () => {
                             value={change}
                             onChange={handleNumberInput(setChange)}
                         />
-                        {errors.value.change && <p className="error-message">{errors.value.change}</p>}
+                        {errors.value?.change && <p className="error-message">{errors.value.change}</p>}
                     </div>
 
                     {/* Submit Button */}
@@ -154,7 +153,7 @@ export const AnalysisForm = () => {
                         disabled={loading.value}>
                         {loading.value ? "Analysis in progress..." : "Start analysis"}
                     </button>
-                    {errors.value.global && <p className="error-message">{errors.value.global}</p>}
+                    {errors.value?.global && <p className="error-message">{errors.value.global}</p>}
                     {loading.value ? "Bear with us. The data from almost 350 currency pairs is being collected and analysed for you. This takes an average of 35 seconds " : ""}
                 </form>
 

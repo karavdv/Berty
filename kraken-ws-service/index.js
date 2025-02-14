@@ -16,11 +16,6 @@ app.use(express.json());
 // Globale map voor actieve abonnementen
 const subscriptions = {};
 
-app.get('/', (req, res) => {
-    res.json({ message: "Node.js WebSocket server is actief en luistert." });
-});
-
-
 app.post('/subscribe', (req, res) => {
     const { pair, botId } = req.body;
     if (!pair || !botId) {

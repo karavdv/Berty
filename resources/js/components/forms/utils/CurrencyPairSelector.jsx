@@ -20,12 +20,13 @@ export const CurrencyPairSelector = () => {
         );
         const data = await response.json();
 
+        console.log("📡 API Response voor valutaparen:", data);
+
         if (Array.isArray(data)) {
           // Update de beschikbare paren door een nieuwe array aan te maken
           availablePairs.value = [...data];
           loadingPairs.value = false;
         } else {
-          // Indien gewenst: implementeer hier retry-logica
           throw new Error("Error fetching currency pairs");
         }
       } catch (err) {

@@ -5,20 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
-use App\Services\MarketAnalyzer;
+use App\Services\CurrencyPairs;
 
 class TradingFormController extends Controller
 {
-    protected $marketAnalyzer;
+    protected $currencyPairs;
 
-    public function __construct(MarketAnalyzer $marketAnalyzer)
+    public function __construct(CurrencyPairs $currencyPairs)
     {
-        $this->marketAnalyzer = $marketAnalyzer;
+        $this->currencyPairs = $currencyPairs;
     }
 
     public function fetchCurrencyPairs($currency)
     {
-        $pairs = $this->marketAnalyzer->getCurrencyPairs(strtoupper($currency));//strtoupper() transforms string in uppercase ass extra security against mistakes
+        $pairs = $this->currencyPairs->getPairsForCurrency(strtoupper($currency));//strtoupper() transforms string in uppercase ass extra security against mistakes
         return response()->json($pairs);
     }
 }
