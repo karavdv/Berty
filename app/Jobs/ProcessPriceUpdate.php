@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\TradingBot;
+use App\Services\KrakenApiServicePrivate;
+use App\Services\TradingBotService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,52 +18,20 @@ class ProcessPriceUpdate implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected int $botId;
-    protected float $price;
 
-    public function __construct(int $botId, float $price)
+    public function __construct(int $botId)
     {
         $this->botId = $botId;
-        $this->price = $price;
     }
 
     public function handle()
     {
-        $bot = TradingBot::find($this->botId);
-        if (!$bot) {
-            Log::warning("❌ Bot-ID {$this->botId} niet gevonden.");
-            return;
-        }
 
-        Log::info("📊 Verwerk prijsupdate voor bot-ID {$bot->id} met prijs: {$this->price}");
-        $bot->processPriceUpdate($this->price);
+
+        Log::info("📊 Verwerk prijsupdate voor bot-ID {$this->botId}");
+
+        // Start de bot service
+        $botService = new TradingBotService(new KrakenApiServicePrivate(), $this->botId);
+        $botService->processPriceUpdate();
     }
-
-    
-/*
-    protected string $pair;
-    protected float $price;
-
-    public function __construct(string $pair, float $price)
-    {
-        $this->pair = $pair;
-        $this->price = $price;
-    }
-
-    public function handle()
-    {
-        // Haal alle actieve bots op die dit valutapaar volgen
-        $bots = TradingBot::where('pair', $this->pair)
-                          ->where('status', 'active')
-                          ->get();
-
-        if ($bots->isEmpty()) {
-            Log::warning("⚠️ Geen actieve bots gevonden voor pair: {$this->pair}");
-            return;
-        }
-
-        foreach ($bots as $bot) {
-            Log::info("📊 Verwerk prijsupdate voor bot ID {$bot->id} met prijs: {$this->price}");
-            $bot->processPriceUpdate($this->price);
-        }
-    }*/
 }

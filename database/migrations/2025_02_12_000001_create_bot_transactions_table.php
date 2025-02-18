@@ -18,7 +18,7 @@ class CreateBotTransactionsTable extends Migration
             $table->decimal('price', 15, 8);
             //kolommen voor sell-informatie
             $table->boolean('sold')->default(false);  // Wordt op true gezet zodra de sell is uitgevoerd
-            $table->decimal('sell_volume', 15, 8)->nullable(); // Het bedrag van de verkoop, null als er nog geen sell is
+            $table->decimal('sell_amount', 15, 8)->nullable(); // Het bedrag van de verkoop, null als er nog geen sell is
             $table->timestamps();
 
             $table->foreign('trading_bot_id')->references('id')->on('trading_bots')->onDelete('cascade');

@@ -12,7 +12,7 @@ class BotTransaction extends Model
         'volume',
         'price',
         'sold',
-        'sell_volume'
+        'sell_amount'
     ];
 
     // Relatie met de TradingBot

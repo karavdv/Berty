@@ -37,10 +37,11 @@ Route::get('/currency-pairs/{currency}', [CurrencyPairs::class, 'getPairsForCurr
 /* trading */
 Route::post('/trading-bot/start', [TradingBotController::class, 'startBot']);
 
-Route::post('/trading/start', [TradingController::class, 'startBot']);
 Route::get('/trading/dry-run-orders', [TradingController::class, 'getDryRunTrades']);
 
 Route::post('/price-update', [PriceUpdateController::class, 'store']);
+Route::get('/active-bots', [TradingBotController::class, 'getActiveBots']);
+
 
 
 Route::get('/trading/open-orders', [TradingController::class, 'getOpenOrders']);
@@ -54,4 +55,7 @@ Route::get('/trading/history', [TradingController::class, 'getOrderHistory']);
 Route::get('/trading/dashboard', [TradingBotController::class, 'dashboard']);
 Route::post('/trading/{botId}/toggle', [TradingBotController::class, 'toggle']);
 Route::post('/trading/{botId}/stop', [TradingBotController::class, 'stopBot']);
+Route::post('/trading/{botId}/restart', [TradingBotController::class, 'restartBot']);
+Route::delete('/trading/{botId}/delete', [TradingBotController::class, 'deleteBot']);
+
 

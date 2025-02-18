@@ -132,12 +132,13 @@
 }
 
 .trade-table th {
-    background: #007bff;
+    background: #e44d1f ;
     color: white;
 }
 
 .trade-table tr:nth-child(even) {
     background: #f2f2f2;
+    color: #000000;
 }
 
 /* Responsiviteit */

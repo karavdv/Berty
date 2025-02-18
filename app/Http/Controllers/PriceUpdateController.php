@@ -19,6 +19,7 @@ class PriceUpdateController extends Controller
         $validated = $request->validate([
             'pair' => 'required|string',
             'price' => 'required|numeric',
+            'top' => 'required|numeric',
             'botId' => 'required|integer'
         ]);
 
@@ -27,13 +28,15 @@ class PriceUpdateController extends Controller
             Log::warning("❌ Bot met ID {$validated['botId']} niet gevonden voor pair {$validated['pair']}");
             return response()->json(['error' => 'Bot niet gevonden'], 404);
         }
-    
-        Log::info("📊 Prijsupdate verwerkt voor bot-ID {$bot->id}: prijs: {$validated['price']}");
-    
-        // Start verwerking in de queue
-        ProcessPriceUpdate::dispatch($validated['botId'], $validated['price']);
-    
-        return response()->json(['message' => 'Prijsupdate ontvangen en verwerkt']);
-}
 
+        // update last price en top in de database naar de net ontvangen gegevens
+        $bot->botRun->update(['last_price' => $validated['price']]);
+        $bot->botRun->update(['top' => $validated['top']]);
+        
+        // Start verwerking in de queue met enkel de bot ID om problemen met serialisatie in job te voorkomen
+        ProcessPriceUpdate::dispatch($bot->getBotId());
+
+        return response()->json(['message' => 'Prijsupdate ontvangen en verwerking gestart']);
+    }
 }
+  

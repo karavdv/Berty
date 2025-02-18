@@ -677,6 +677,7 @@ class ComposerStaticInit45c655e67ab09ab58271ce9798b999cb
         'App\\Models\\TradingBot' => __DIR__ . '/../..' . '/app/Models/TradingBot.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
+        'App\\Services\\CurrencyPairs' => __DIR__ . '/../..' . '/app/Services/CurrencyPairs.php',
         'App\\Services\\KrakenApiServicePrivate' => __DIR__ . '/../..' . '/app/Services/KrakenApiServicePrivate.php',
         'App\\Services\\KrakenApiServicePublic' => __DIR__ . '/../..' . '/app/Services/KrakenApiServicePublic.php',
         'App\\Services\\MarketAnalyzer' => __DIR__ . '/../..' . '/app/Services/MarketAnalyzer.php',

@@ -20,6 +20,7 @@ return array(
     'App\\Models\\TradingBot' => $baseDir . '/app/Models/TradingBot.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
+    'App\\Services\\CurrencyPairs' => $baseDir . '/app/Services/CurrencyPairs.php',
     'App\\Services\\KrakenApiServicePrivate' => $baseDir . '/app/Services/KrakenApiServicePrivate.php',
     'App\\Services\\KrakenApiServicePublic' => $baseDir . '/app/Services/KrakenApiServicePublic.php',
     'App\\Services\\MarketAnalyzer' => $baseDir . '/app/Services/MarketAnalyzer.php',

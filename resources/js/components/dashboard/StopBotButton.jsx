@@ -22,7 +22,7 @@ export const StopBotButton = ({ botId, setBots, setError }) => {
       console.log('Bot gestopt:', updatedBot);
     } catch (error) {
       console.error('Fout bij stoppen bot:', error);
-      setError(err.message);
+      setError(error.message);
     }
   };
 
