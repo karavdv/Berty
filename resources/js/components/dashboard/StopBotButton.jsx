@@ -27,7 +27,7 @@ export const StopBotButton = ({ botId, setBots, setError }) => {
   };
 
   return (
-    <button onClick={handleStop} className='stop-bot-button'>
+    <button onClick={handleStop} className='red-button'>
       Stop Bot
     </button>
   );

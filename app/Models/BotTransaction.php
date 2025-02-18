@@ -12,7 +12,12 @@ class BotTransaction extends Model
         'volume',
         'price',
         'sold',
-        'sell_amount'
+        'sell_amount',
+        'sold_at'
+    ];
+
+    protected $casts = [
+        'sold_at' => 'datetime',
     ];
 
     // Relatie met de TradingBot

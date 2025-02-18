@@ -146,7 +146,7 @@ class TradingBotController extends Controller
                         'buyPrice'  => $transaction->price,
                         'volume'    => $transaction->volume,
                         'sold'      => $transaction->sold,
-                        'sellTime'  => $transaction->updated_at->toDateTimeString() ?? null,
+                        'sellTime'  => $transaction->sold_at ? $transaction->sold_at->toDateTimeString() : null, // Gebruik de nieuwe timestamp
                         'sellAmount' => $transaction->sell_amount ?? null,
                     ];
                 }),

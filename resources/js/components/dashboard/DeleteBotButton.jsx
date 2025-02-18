@@ -26,7 +26,7 @@ export const DeleteBotButton = ({ botId, setBots, setError }) => {
   };
 
   return (
-    <button onClick={handleDelete} className='delete-bot-button'>
+    <button onClick={handleDelete} className='red-button'>
       Delete Bot
     </button>
   );

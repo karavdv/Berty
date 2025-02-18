@@ -58,9 +58,12 @@ class TradingBotService
             Log::info("Nieuwe hoogste prijs, referencePrice ingesteld op €{$this->botRun->getLastPrice()}");
         }
 
-        if (BotTransaction::where('trading_bot_id', $this->botId)->doesntExist() && $this->bot->getStartBuy() <= $this->botRun->getLastPrice() ) {
-            Log::info("✅ The first buy has been reached.");
-            $this->placeBuyOrder($this->bot->getTradeSize(), $this->botRun->getLastPrice());
+        if (BotTransaction::where('trading_bot_id', $this->botId)->doesntExist()) {
+            if ($this->bot->getStartBuy() <= $this->botRun->getLastPrice()) {
+                Log::info("✅ The first buy has been reached.");
+                $this->placeBuyOrder($this->bot->getTradeSize(), $this->botRun->getLastPrice());
+            }
+            return;
         }
 
         // Controleer open trades en verkoop indien nodig
@@ -92,8 +95,7 @@ class TradingBotService
 
             if ($profitGain >= $this->bot->getProfitThreshold()) {
                 Log::info("💰 Profit target bereikt! Verkoop wordt uitgevoerd.");
-                $this->placeSellOrder($trade, $this->botRun->getLastPrice());
-                $this->botRun->setOpenTradeVolume($this->botRun->getOpenTradeVolume() - $this->bot->getTradeSize());
+                $this->placeSellOrder($trade, $this->botRun->getLastPrice(), $profitGain);
             }
         }
     }
@@ -118,7 +120,7 @@ class TradingBotService
             $cumulativeDrop >= $this->bot->getDropThreshold() &&
             $this->botRun->getOpenTradeVolume() + $this->bot->getTradeSize() <= $this->bot->getBudget()
         ) {
-           /* //check if the distance to the top of the chart is bigger then the limit set bu the user, if it is set.
+            /* //check if the distance to the top of the chart is bigger then the limit set bu the user, if it is set.
             if ($this->bot->getTopEdge() !== null && $this->bot->getTopEdge() !== 0){
                 if ($this->bot->getTopEdge() > (($this->botRun->getTop() - $this->botRun->getLastPrice()) /$this->botRun->getTop())*100){
                     Log::info("⚠️ the current price is too close to the top, the order can not be placed. Current Top: {$this->botRun->getTop()}" );
@@ -129,9 +131,6 @@ class TradingBotService
             Log::info("✅ Drop threshold bereikt, koop wordt uitgevoerd.");
             $this->placeBuyOrder($this->bot->getTradeSize(), $this->botRun->getLastPrice());
 
-            // Update open trade volume
-            $this->botRun->setOpenTradeVolume($this->botRun->getOpenTradeVolume() + $this->bot->getTradeSize());
-            $this->botRun->setReferencePrice($this->botRun->getLastPrice());
         }
     }
 
@@ -140,6 +139,10 @@ class TradingBotService
      */
     public function placeBuyOrder(float $volume, float $price): void
     {
+        // Update open trade volume and reset reference price
+        $this->botRun->setOpenTradeVolume($this->botRun->getOpenTradeVolume() + $this->bot->getTradeSize());
+        $this->botRun->setReferencePrice($this->botRun->getLastPrice());
+
         if ($this->bot->getDryRun()) {
             BotTransaction::create([
                 'trading_bot_id' => $this->botId,
@@ -169,14 +172,20 @@ class TradingBotService
     /**
      * Registreert een verkooporder en slaat deze op in de database.
      */
-    public function placeSellOrder(BotTransaction $trade, float $currentPrice): void
+    public function placeSellOrder(BotTransaction $trade, float $currentPrice, float $profitGain): void
     {
+        // Update open trade volume
+        $this->botRun->setOpenTradeVolume($this->botRun->getOpenTradeVolume() - $this->bot->getTradeSize());
+
         if ($this->bot->getDryRun()) {
-            $sellAmount = $currentPrice * $trade->volume;
+            $sellAmount = $trade->volume * (1+($profitGain/100));
             $trade->update([
                 'sold' => true,
                 'sell_amount' => $sellAmount,
+                'sold_at' => now(),
             ]);
+
+            $this->botRun->setProfit($sellAmount - $trade->volume);
 
             Log::info("💰 Dry run: Sell order opgeslagen in database.", [
                 'sell_amount' => $sellAmount,

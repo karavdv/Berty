@@ -1,16 +1,23 @@
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
+    width: 70%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 10px solid #e44d1f;
+    border-radius: 2rem;
+    overflow: hidden;
+    margin: 20px auto;
 }
+
+
 th, td {
-    border: 1px solid #ddd;
+    
     padding: 8px;
     text-align: center;
 }
 th {
-    color: black;
-    background-color: #f4f4f4;
+    color: rgb(255, 255, 255);
+    background-color: #000000;
+    padding: 20px 8px;
     font-weight: bold;
 }
 .arrow {
@@ -19,4 +26,8 @@ th {
 .chart-link {
     text-decoration: none;
     cursor: pointer;
+}
+
+button {
+    background-color: #e44d1f;
 }

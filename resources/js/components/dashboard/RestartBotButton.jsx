@@ -27,7 +27,7 @@ export const RestartBotButton = ({ botId, setBots, setError }) => {
   };
 
   return (
-    <button onClick={handleStart} className='start-bot-button'>
+    <button onClick={handleStart} className='green-button'>
       Start Bot
     </button>
   );

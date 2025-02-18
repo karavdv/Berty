@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->decimal('open_trade_volume', 15, 8);
             $table->decimal('total_traded_volume', 15, 8)->default(0);
             $table->timestamp('last_trade_time')->nullable();
+            $table->decimal('profit', 15, 8)->nullable();
             $table->boolean('is_live');
             $table->timestamps();
 

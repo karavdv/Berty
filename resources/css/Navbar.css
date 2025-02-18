@@ -1,17 +1,15 @@
 .navbar {
-    width: 50%;
-    margin: 1rem;
+    width: 60%;
+    margin: 1rem auto;
     margin-bottom: 1.5rem;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(119, 44, 0, 0.1);
     padding: 10px 20px;
-    color:  #fff; ;
+    color:  #fff ;
     border-radius: 3rem;
     opacity: 0.8;
     transition: all 0.4s ease-in-out;
-    background: #ffffff0f;
-    backdrop-filter: blur(16px);
-    /* Pas de blur-intensiteit aan */
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(62px);
+    -webkit-backdrop-filter: blur(62px);
     /* Voor Safari-ondersteuning */
 }
 
@@ -38,6 +36,7 @@
 .navbar-container {
     display: flex;
     justify-content: space-between;
+    column-gap: 10px;
     align-items: center;
     padding: 0.5rem;
 }

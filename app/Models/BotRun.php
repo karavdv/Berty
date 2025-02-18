@@ -19,6 +19,7 @@ class BotRun extends Model
         'open_trade_volume',
         'total_traded_volume',
         'last_trade_time',
+        'profit',
         'is_live',
     ];
 
@@ -29,6 +30,7 @@ class BotRun extends Model
         'open_trade_volume' => 'decimal:8',
         'total_traded_volume' => 'decimal:8',
         'last_trade_time' => 'datetime',
+        'profit' => 'decimal:8',
         'is_live' => 'boolean',
     ];
 
@@ -67,6 +69,11 @@ class BotRun extends Model
     public function getLastTradeTime(): ?\Carbon\Carbon
     {
         return $this->last_trade_time;
+    }
+
+    public function getProfit(): ?float
+    {
+        return $this->profit;
     }
 
     public function isLive(): bool
@@ -108,6 +115,12 @@ class BotRun extends Model
     public function setLastTradeTime(\Carbon\Carbon $time): void
     {
         $this->last_trade_time = $time;
+        $this->save();
+    }
+
+    public function setProfit($profit): void
+    {
+        $this->profit += $profit;
         $this->save();
     }
 
