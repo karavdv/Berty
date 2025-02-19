@@ -11,6 +11,7 @@ import { TradeBotDashboard } from './dashboard/TradeBotDashboard.jsx';
 
 export const Main = () => {
     return (
+    <>
         <Router>
             <Navbar />
             <Routes>
@@ -20,6 +21,7 @@ export const Main = () => {
                 <Route path="/dashboard" element={<TradeBotDashboard />} />
             </Routes>
         </Router>
+        </>
     );
 };
 

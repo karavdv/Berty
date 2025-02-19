@@ -64,7 +64,7 @@ export const TradeBotDashboard = () => {
             <h3>Bot settings</h3>
             <p>Trade amount: €{bot.trade_size}</p>
             <p>Drop: {bot.drop_threshold}%</p>
-            <p>Profit: {bot.profit_threshold}%</p>
+            <p>Profit goal: {bot.profit_threshold}%</p>
             <p>Start buy: {bot.start_buy}</p>
             <p>Accumulate: {bot.accumulate ? 'Yes' : 'No'}</p>
             <p>Top: {bot.top_edge ?? 'N/A'}%</p>

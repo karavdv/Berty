@@ -71,9 +71,9 @@ class BotRun extends Model
         return $this->last_trade_time;
     }
 
-    public function getProfit(): ?float
+    public function getProfit(): float
     {
-        return $this->profit;
+        return $this->profit ?? 0.0;
     }
 
     public function isLive(): bool

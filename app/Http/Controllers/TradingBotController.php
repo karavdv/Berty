@@ -138,7 +138,8 @@ class TradingBotController extends Controller
 
                 'openTradeVolume'   => round(optional($bot->botRun)->open_trade_volume ?? 0,2),
                 'totalTradedVolume' => round(optional($bot->botRun)->total_traded_volume ?? 0,2),
-                
+                'profit' => round(optional($bot->botRun)->profit ?? 0,2),
+
                 // Transacties die bij de bot horen
                 'trades' => $bot->transactions->map(function ($transaction) {
                     return [
