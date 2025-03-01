@@ -188,7 +188,7 @@ class TradingBotService
             $this->botRun->setProfit($sellAmount - $trade->volume);
 
             if ($this->bot->getAccumulate()){
-                $this->bot->setBudget($this->bot->getBudget()+$this->botRun->getProfit());
+                $this->bot->setBudget($this->bot->getBudget()+($sellAmount - $trade->volume));
             }
 
             Log::info("💰 Dry run: Sell order opgeslagen in database.", [

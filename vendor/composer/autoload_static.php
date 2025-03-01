@@ -673,6 +673,7 @@ class ComposerStaticInit45c655e67ab09ab58271ce9798b999cb
         'App\\Http\\Controllers\\TradingFormController' => __DIR__ . '/../..' . '/app/Http/Controllers/TradingFormController.php',
         'App\\Jobs\\FindQualifiedPairsJob' => __DIR__ . '/../..' . '/app/Jobs/FindQualifiedPairsJob.php',
         'App\\Jobs\\ProcessPriceUpdate' => __DIR__ . '/../..' . '/app/Jobs/ProcessPriceUpdate.php',
+        'App\\Models\\BotRun' => __DIR__ . '/../..' . '/app/Models/BotRun.php',
         'App\\Models\\BotTransaction' => __DIR__ . '/../..' . '/app/Models/BotTransaction.php',
         'App\\Models\\TradingBot' => __DIR__ . '/../..' . '/app/Models/TradingBot.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',

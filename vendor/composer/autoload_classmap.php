@@ -16,6 +16,7 @@ return array(
     'App\\Http\\Controllers\\TradingFormController' => $baseDir . '/app/Http/Controllers/TradingFormController.php',
     'App\\Jobs\\FindQualifiedPairsJob' => $baseDir . '/app/Jobs/FindQualifiedPairsJob.php',
     'App\\Jobs\\ProcessPriceUpdate' => $baseDir . '/app/Jobs/ProcessPriceUpdate.php',
+    'App\\Models\\BotRun' => $baseDir . '/app/Models/BotRun.php',
     'App\\Models\\BotTransaction' => $baseDir . '/app/Models/BotTransaction.php',
     'App\\Models\\TradingBot' => $baseDir . '/app/Models/TradingBot.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',

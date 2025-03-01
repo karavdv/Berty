@@ -116,7 +116,7 @@ export const GoalForm = () => {
                         <h3>Results after 1 year of trading</h3>
                         <p>Trading Days: {results.days_traded}</p>
                         <p>In 1 year you will turn €{results.initial_capital} into €{results.final_capital} </p>
-                        <p className='small'>Remember that these are possible results. Mathematically, these results are correct. However, there is no guarantee that all your trades will result in a 5% profit. In fact, on some trades, you will lose money. Your trade may also take longer to sell than you expected. Use these calculations as a guideline and motivation, not as a promise of results!</p>
+                        <p className='small'>Remember that these are possible results. Mathematically, these results are correct. However, there is no guarantee that all your trades will result in a wished for profit. In fact, on some trades, you will lose money. Your trade may also take longer to sell than you expected. Use these calculations as a guideline and motivation, not as a promise of results!</p>
 
                     </div>
                 )}
