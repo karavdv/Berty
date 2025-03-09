@@ -2,7 +2,7 @@ import React from 'react';
 
 export const DeleteBotButton = ({ botId, setBots, setError }) => {
   const handleDelete = async () => {
-    if (!window.confirm("Weet je zeker dat je deze bot wilt verwijderen? Dit kan niet ongedaan gemaakt worden!")) {
+    if (!window.confirm("Are you sure you want to delete this bot? Once deleted the data can not be recovered!")) {
       return;
     }
 
@@ -18,9 +18,9 @@ export const DeleteBotButton = ({ botId, setBots, setError }) => {
         throw new Error(`Failed to delete bot: ${response.status}`);
       }
 
-      console.log(`Bot ${botId} succesvol verwijderd.`);
+      console.log(`Bot ${botId} succesfully deleted.`);
     } catch (error) {
-      console.error('Fout bij verwijderen bot:', error);
+      console.error('Error occured when deleting bot:', error);
       setError(error.message);
     }
   };

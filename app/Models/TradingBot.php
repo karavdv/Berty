@@ -3,11 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class TradingBot extends Model
 {
-    // Geef aan welke kolommen ingevuld mogen worden
     protected $fillable = [
         'pair',
         'trade_size',
@@ -23,7 +21,7 @@ class TradingBot extends Model
         'last_price'
     ];
 
-    // Zorgt voor automatische typecasting
+    // Automatic typecasting
     protected $casts = [
         'trade_size' => 'decimal:8',
         'drop_threshold' => 'decimal:2',
@@ -37,19 +35,19 @@ class TradingBot extends Model
         'last_price' => 'decimal:8',
     ];
 
-    /**
-     * Een trading bot kan meerdere transacties (buys/sells) hebben.
-     */
+    //Relation to BotTransaction.
     public function transactions()
     {
         return $this->hasMany(BotTransaction::class);
     }
 
+    //Relation to BotRun.
     public function botRun()
     {
         return $this->hasOne(BotRun::class, 'bot_id');
     }
 
+// Getters
     public function getBotId(): int
     {
         return (int) $this->id;
@@ -60,15 +58,61 @@ class TradingBot extends Model
         return $this->pair;
     }
 
+    public function getTradeSize(): float
+    {
+        return (float) $this->trade_size;
+    }
+
+    public function getDropThreshold(): float
+    {
+        return (float) $this->drop_threshold;
+    }
+    
+    public function getProfitThreshold(): float
+    {
+        return (float) $this->profit_threshold;
+    }
+
+    public function getStartBuy(): float
+    {
+        return (float) $this->start_buy;
+    }
+
+    public function getBudget(): float
+    {
+        return (float) $this->budget;
+    }
+
+    public function getAccumulate(): bool
+    {
+        return (bool) $this->accumulate;
+    }
+
+    public function getTopEdge(): ?float
+    {
+        return $this->top_edge !== null ? (float) $this->top_edge : null;
+    }
+
+    public function getStopLoss(): ?float
+    {
+        return $this->stop_loss !== null ? (float) $this->stop_loss : null;
+    }
+
+    public function getDryRun(): bool
+    {
+        return (bool) $this->dry_run;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    // Setters
     public function setPair(string $pair): void
     {
         $this->pair = $pair;
         $this->save();
-    }
-
-    public function getTradeSize(): float
-    {
-        return (float) $this->trade_size;
     }
 
     public function setTradeSize(float $tradeSize): void
@@ -77,20 +121,10 @@ class TradingBot extends Model
         $this->save();
     }
 
-    public function getDropThreshold(): float
-    {
-        return (float) $this->drop_threshold;
-    }
-
     public function setDropThreshold(float $dropThreshold): void
     {
         $this->drop_threshold = $dropThreshold;
         $this->save();
-    }
-
-    public function getProfitThreshold(): float
-    {
-        return (float) $this->profit_threshold;
     }
 
     public function setProfitThreshold(float $profitThreshold): void
@@ -99,20 +133,10 @@ class TradingBot extends Model
         $this->save();
     }
 
-    public function getStartBuy(): float
-    {
-        return (float) $this->start_buy;
-    }
-
     public function setStartBuy(float $startBuy): void
     {
         $this->start_buy = $startBuy;
         $this->save();
-    }
-
-    public function getBudget(): float
-    {
-        return (float) $this->budget;
     }
 
     public function setBudget(float $budget): void
@@ -121,20 +145,10 @@ class TradingBot extends Model
         $this->save();
     }
 
-    public function getAccumulate(): bool
-    {
-        return (bool) $this->accumulate;
-    }
-
     public function setAccumulate(bool $accumulate): void
     {
         $this->accumulate = $accumulate;
         $this->save();
-    }
-
-    public function getTopEdge(): ?float
-    {
-        return $this->top_edge !== null ? (float) $this->top_edge : null;
     }
 
     public function setTopEdge(?float $topEdge): void
@@ -143,20 +157,10 @@ class TradingBot extends Model
         $this->save();
     }
 
-    public function getStopLoss(): ?float
-    {
-        return $this->stop_loss !== null ? (float) $this->stop_loss : null;
-    }
-
     public function setStopLoss(?float $stopLoss): void
     {
         $this->stop_loss = $stopLoss;
         $this->save();
-    }
-
-    public function getDryRun(): bool
-    {
-        return (bool) $this->dry_run;
     }
 
     public function setDryRun(bool $dryRun): void
@@ -165,16 +169,9 @@ class TradingBot extends Model
         $this->save();
     }
 
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
     public function setStatus(string $status): void
     {
         $this->status = $status;
         $this->save();
     }
-
-    
 }

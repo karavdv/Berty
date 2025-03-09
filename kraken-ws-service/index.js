@@ -4,7 +4,7 @@ dotenv.config();
 
 import express from 'express';
 import http from 'http';
-import { WebSocketServer } from 'ws'; // Gebruik de named import
+import { WebSocketServer } from 'ws'; // Use named import
 import { subscribeToPair } from './krakenService.js';
 import { getSubscriptions, setSubscriptions, saveSubscriptions } from './subscriptionManager.js';
 import { restartSubscriptions } from './restartSubscriptions.js';
@@ -15,79 +15,75 @@ const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const subscriptions = getSubscriptions();
 
-// Gebruik express.json() om JSON in de body te verwerken
+// Use express.json() to process JSON in the body
 app.use(express.json());
 
-// Herstel alle actieve subscriptions bij een herstart
+// Restore all active subscriptions on restart
 restartSubscriptions();
 
 app.post('/subscribe', (req, res) => {
     const { pair, botId } = req.body;
     if (!pair || !botId) {
-        return res.status(400).json({ error: 'Valutapaar en bot-ID zijn vereist' });
+        return res.status(400).json({ error: 'Currency pair and bot ID are required' });
     }
 
-    // Controleer of er al een WebSocket-verbinding voor dit valutapaar is
+    // Check if there already is a WebSocket connection for this currency pair
     if (!subscriptions[pair]) {
-        console.log(`🆕 Nieuwe WebSocket-abonnement gestart voor ${pair}`);
+        console.log(`🆕 Starting new WebSocket subscription for ${pair}`);
         subscriptions[pair] = {
             websocket: subscribeToPair(pair, (price) => {
-                console.log(`📡 Prijsupdate voor ${pair}: ${price}`);
+                console.log(`📡 Price update for ${pair}: ${price}`);
             }),
             bots: [botId]
         };
     }
 
-// Voeg botId toe als die nog niet in de array voorkomt
-if (!subscriptions[pair].bots.includes(botId)) {
+    // Add botId if it is not already in the array
+    if (!subscriptions[pair].bots.includes(botId)) {
     subscriptions[pair].bots.push(botId);
   }
-    console.log(`✅ Bot ${botId} toegevoegd aan updates voor ${pair}`);
+  console.log(`✅ Bot ${botId} added to updates for ${pair}`);
 
-    setSubscriptions(subscriptions);  // Update de memory
-    saveSubscriptions(subscriptions); // sla wijzigingen op voor bij herstart server
+    setSubscriptions(subscriptions);  // Update memory
+    saveSubscriptions(subscriptions); // Save changes for server restart
 
 
-    res.json({ message: `Abonnement gestart voor bot ${botId} met valutapaar ${pair}` });
+    res.json({ message: `Subscription started for bot ${botId} with currency pair ${pair}` });
 });
 
 app.post('/unsubscribe', (req, res) => {
     const { pair, botId } = req.body;
     if (!pair || !botId) {
-        return res.status(400).json({ error: 'Valutapaar en bot-ID zijn vereist' });
+        return res.status(400).json({ error: 'Currency pair and bot ID are required' });
     }
 
     if (subscriptions[pair]) {
 
         subscriptions[pair].bots = subscriptions[pair].bots.filter(id => id !== botId);
-        console.log(`🚫 Bot ${botId} verwijderd uit updates voor ${pair}`);
+        console.log(`🚫 Bot ${botId} removed from updates for ${pair}`);
 
-        // Als er geen bots meer zijn die dit valutapaar volgen, sluit de WebSocket
+        // If there are no more bots subscribed to this currency pair, close the WebSocket
         if (subscriptions[pair].bots.length === 0) {
             console.log(`🛑 Geen actieve bots meer voor ${pair}, WebSocket wordt gesloten.`);
             subscriptions[pair].websocket.close();
             delete subscriptions[pair];
         }
     }
+    setSubscriptions(subscriptions);  // Update memory
+    saveSubscriptions(subscriptions); // Save changes for server restart
 
-    setSubscriptions(subscriptions);  // Update de memory
-    saveSubscriptions(subscriptions); // sla wijzigingen op voor bij herstart server
-
-
-    res.json({ message: `Abonnement gestopt voor bot ${botId} met valutapaar ${pair}` });
+    res.json({ message: `Subscription stopped for bot ${botId} with currency pair ${pair}` });
 });
 
-
-
-// Start een WebSocket-server voor clients
+// Start a WebSocket server for clients
 const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws) => {
-    console.log('Client verbonden');
-    ws.send(JSON.stringify({ message: 'Verbonden met Kraken WS relay' }));
+    console.log('Client connected');
+    ws.send(JSON.stringify({ message: 'Connected to Kraken WS relay' }));
 });
 
-// Functie om berichten naar alle verbonden clients te sturen
+// Function to send messages to all connected clients
 function broadcast(data) {
     wss.clients.forEach(client => {
         if (client.readyState === client.OPEN) {
@@ -96,7 +92,7 @@ function broadcast(data) {
     });
 }
 
-// Start de server
+// Start server
 server.listen(port, () => {
-    console.log(`Server draait op poort ${port}`);
+    console.log(`Server running on port ${port}`);
 });

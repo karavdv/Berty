@@ -8,22 +8,20 @@ export const CurrencyPairSelector = () => {
 
   useEffect(() => {
     const fetchCurrencyPair = async () => {
-      // Voer de fetch alleen uit als er een currency is geselecteerd
       if (!selectedCurrency.value) return;
       
       loadingPairs.value = true;
       errors.value = null;
-
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/currency-pairs/${selectedCurrency.value}`
         );
         const data = await response.json();
 
-        console.log("📡 API Response voor valutaparen:", data);
+        console.log("📡 API Response for valuta pairs:", data);
 
         if (Array.isArray(data)) {
-          // Update de beschikbare paren door een nieuwe array aan te maken
+          // Update available pairs by creating a new array
           availablePairs.value = [...data];
           loadingPairs.value = false;
         } else {
@@ -36,22 +34,21 @@ export const CurrencyPairSelector = () => {
     };
 
     fetchCurrencyPair();
-  }, [selectedCurrency.value]); // Voer de fetch uit telkens wanneer de geselecteerde currency verandert
+  }, [selectedCurrency.value]); 
 
-  // Filter valutaparen op basis van de zoekopdracht
+  // Filter valuta pairs according to search query
   const filteredPairs =
     availablePairs.value?.filter((pair) =>
       pair.toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];
 
-  // Verberg de component als er geen currency geselecteerd is
+  // Hide the component when no currency is selected
   if (!selectedCurrency.value) return null;
 
   return (
     <div className="analysis form-group">
       <label htmlFor="currencyPair">Select a trading pair</label>
 
-      {/* Zoekveld voor valutaparen */}
       <input
         type="text"
         placeholder="Search pair..."
@@ -59,7 +56,6 @@ export const CurrencyPairSelector = () => {
         onChange={(e) => setSearchQuery(e.target.value)}
       />
 
-      {/* Select dropdown voor valutaparen */}
       <select
         id="currencyPair"
         name="currencyPair"

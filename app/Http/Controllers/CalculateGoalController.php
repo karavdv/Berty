@@ -4,37 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\CalculateGoalService;
 
 class CalculateGoalController extends Controller
 {
+    protected $calculatorService;
+
+    public function __construct(CalculateGoalService $calculatorService)
+    {
+        $this->calculatorService = $calculatorService;
+    }
+
     public function calculateInvestment(Request $request)
     {
-        // Validatie van de invoer
+        // Validation form input
         $validated = $request->validate([
             'capital' => 'required|numeric|min:0.01',
             'days' => 'required|integer|min:1|max:7',
             'margin' => 'required|numeric|min:0.01',
         ]);
 
-        // Gegevens uit React formulier ophalen
-        $startCapital = $validated['capital'];
-        $dailyRate = $validated['margin'] / 100; // Omzetten naar decimale waarde
-        $daysPerWeek = $validated['days'];
-        $weeksPerYear = 52;
+        //CalculateGoalsService calculates capital growth
+        $result = $this->calculatorService->calculate(
+            $validated['capital'],
+            $validated['days'],
+            $validated['margin']
+        );
 
-        // Berekening van de groei
-        $capital = $startCapital;
-        $totalDays = $daysPerWeek * $weeksPerYear;
-        for ($i = 0; $i < $totalDays; $i++) {
-            $capital *= (1 + $dailyRate);
-        }
-
-        // Resultaat sturen naar React
-        return response()->json([
-            'initial_capital' => $startCapital,
-            'final_capital' => number_format($capital, 2),
-            'days_traded' => $totalDays,
-            'profit_margin' => $dailyRate * 100,
-        ]);
+        // Sending results to front-end
+        return response()->json($result);
     }
 }

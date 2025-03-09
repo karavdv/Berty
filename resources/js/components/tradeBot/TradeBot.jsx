@@ -12,7 +12,7 @@ export const TradeBot = () => {
             <h2>Ready to start your bot?</h2>
             {!showOverviewPage.value ?
                 <>
-                    <p>Take your time to fill in this form and do your research!</p>
+                    <p>Take your time to do your research! Then fill out this form to start your bot!</p>
                     <TradeBotForm />
                 </>
                 :

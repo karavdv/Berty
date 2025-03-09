@@ -1,8 +1,5 @@
 import React from 'react';
-//import '../../css/Home.css';
 import { GoalForm } from './forms/GoalForm.jsx';
-
-
 
 export const Home = () => {
     return (
@@ -13,7 +10,6 @@ export const Home = () => {
                 <p>“Setting goals is the first step in turning the invisible into the visible.” – Tony Robbins</p>
                 <GoalForm />
             </section>
-
         </>
     );
 };

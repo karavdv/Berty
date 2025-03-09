@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSignals } from "@preact/signals-react/runtime";
 import { selectedCurrency, selectedPair, availablePairs, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, stopLoss, showOverviewPage, errors } from "../../components/Signals.js";
 import { CurrencySelector } from "../forms/utils/CurrencySelector";
@@ -20,14 +20,14 @@ export const TradeBotForm = () => {
 
         if (selectedCurrency.value) {
 
-        if (!selectedPair.value) {
-            formErrors.selectedPair = "Please select a currency pair.";
-        }
+            if (!selectedPair.value) {
+                formErrors.selectedPair = "Please select a currency pair.";
+            }
 
-        if (availablePairs.value && availablePairs.value.length > 0 && !availablePairs.value.includes(selectedPair.value)) {
-            formErrors.selectedPair = "Invalid currency pair selected.";
+            if (availablePairs.value && availablePairs.value.length > 0 && !availablePairs.value.includes(selectedPair.value)) {
+                formErrors.selectedPair = "Invalid currency pair selected.";
+            }
         }
-    }
 
         if (!tradeSize.value || tradeSize.value <= 0) {
             formErrors.tradeSize = "Enter a valid trade amount.";
@@ -52,11 +52,11 @@ export const TradeBotForm = () => {
         }
 
         if (Object.keys(formErrors).length > 0) {
-            errors.value = formErrors; // Update de errors als er fouten zijn
-            return; // Stop de functie hier als er fouten zijn
+            errors.value = formErrors; // Update errors if they occur
+            return; // Stop function if errors occur
         }
-    
-        errors.value = {}; // Reset fouten
+
+        errors.value = {}; // Reset previous errors
         showOverviewPage.value = true;
     };
 

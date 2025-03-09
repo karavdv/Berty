@@ -14,14 +14,14 @@ export const StopBotButton = ({ botId, setBots, setError }) => {
 
       const updatedBot = await response.json();
       
-      // Update bot status in het dashboard
+      // Update bot status in state
       setBots(prevBots =>
         prevBots.map(bot => (bot.id === botId ? updatedBot : bot))
       );
 
-      console.log('Bot gestopt:', updatedBot);
+      console.log('Bot stopped:', updatedBot);
     } catch (error) {
-      console.error('Fout bij stoppen bot:', error);
+      console.error('Error stopping bot:', error);
       setError(error.message);
     }
   };

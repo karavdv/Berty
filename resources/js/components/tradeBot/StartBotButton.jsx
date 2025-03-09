@@ -1,10 +1,12 @@
 import React from "react";
 import { useSignals } from "@preact/signals-react/runtime";
+import { useNavigate } from 'react-router-dom';
 import { selectedPair, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, stopLoss, showOverviewPage } from "../../components/Signals.js";
 import '../../../css/TradeBotOverview.css';
 
 export const StartBotButton = () => {
     useSignals();
+    const navigate = useNavigate();
 
     const sendBotData = async () => {
         try {
@@ -29,8 +31,9 @@ export const StartBotButton = () => {
             }
 
             const result = await response.json();
-            console.log("Trading bot succesvol gestart:", result);
-            showOverviewPage.value = false;  // Optioneel: terug naar overzicht
+            console.log("Trading bot started:", result);
+            showOverviewPage.value = false;
+            navigate('/dashboard'); // Navigate to TradeBotDashboard after starting the bot
         } catch (error) {
             console.error("Fout bij starten trading bot:", error);
         }

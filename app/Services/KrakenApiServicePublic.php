@@ -15,13 +15,10 @@ class KrakenApiServicePublic
     {
         $this->baseUrl = config('services.kraken.base_url');
         $this->httpClient = new Client([
-            'timeout' => 10, // Stel een timeout in (in seconden)
+            'timeout' => 10, // Timeout in seconds
         ]);
     }
 
-    /**
-     * Publieke API-aanroep
-     */
     public function publicRequest(string $endpoint, array $data= []): array
     {
         $url = $this->baseUrl . '/0/public/' . $endpoint;
@@ -33,9 +30,9 @@ class KrakenApiServicePublic
                 'query' => $data, 
             ])->wait();
 
-            // Decodeer en log de response
+            // Decode and log response
             $responseBody = json_decode($response->getBody()->getContents(), true);
-            //Log::info('Public API Response Summary:', $responseBody);
+
             if (isset($responseBody['error']) && !empty($responseBody['error'])) {
                 Log::error('Kraken API Error:', ['endpoint' => $endpoint, 'errors' => $responseBody['error']]);
                 return ['error' => $responseBody['error']];

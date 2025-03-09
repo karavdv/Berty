@@ -8,13 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Models\TradingBot;
 use Illuminate\Support\Facades\Log;
 
-
-
 class PriceUpdateController extends Controller
 {
     public function store(Request $request)
     {
-        Log::info("Prijsupdate ontvangen in Laravel:", $request->all()); // Extra log
+        Log::info("Price update received in PriceUpdateController:", $request->all());
 
         $validated = $request->validate([
             'pair' => 'required|string',
@@ -25,18 +23,23 @@ class PriceUpdateController extends Controller
 
         $bot = TradingBot::find($validated['botId']);
         if (!$bot) {
-            Log::warning("❌ Bot met ID {$validated['botId']} niet gevonden voor pair {$validated['pair']}");
-            return response()->json(['error' => 'Bot niet gevonden'], 404);
+            Log::warning("❌ Bot with ID {$validated['botId']} not found for pair {$validated['pair']}");
+            return response()->json(['error' => 'Bot not found'], 404);
         }
 
         // update last price en top in de database naar de net ontvangen gegevens
         $bot->botRun->update(['last_price' => $validated['price']]);
-        $bot->botRun->update(['top' => $validated['top']]);
-        
-        // Start verwerking in de queue met enkel de bot ID om problemen met serialisatie in job te voorkomen
+       
+        // Retrieve the current top value
+        $currentTop = $bot->botRun->top;
+        // Update only if the new value is higher
+        if ($validated['top'] > $currentTop) {
+            $bot->botRun->update(['top' => $validated['top']]);
+        }
+
+        // Start processing queue with only bot ID instead of bot entity to prevent issues with serialisation.
         ProcessPriceUpdate::dispatch($bot->getBotId());
 
-        return response()->json(['message' => 'Prijsupdate ontvangen en verwerking gestart']);
+        return response()->json(['message' => 'Priceupdate received and processing started']);
     }
 }
-  

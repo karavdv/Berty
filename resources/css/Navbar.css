@@ -1,3 +1,4 @@
+/*Navbar.css*/
 .navbar {
     width: 60%;
     margin: 1rem auto;
@@ -10,12 +11,12 @@
     transition: all 0.4s ease-in-out;
     backdrop-filter: blur(62px);
     -webkit-backdrop-filter: blur(62px);
-    /* Voor Safari-ondersteuning */
+    /* For Safari support */
 }
 
 
 
-/* Startpositie navbar: onderaan het scherm */
+/* Initial position of navbar: at the bottom of the screen */
 .navbar-bottom {
     position: fixed;
     bottom: 0;
@@ -23,7 +24,7 @@
     transform: translateX(-50%);
 }
 
-/* Nieuwe positie navbar: bovenaan als er gescrold wordt */
+/* New position of navbar: at the top when scrolled */
 .navbar-top {
     position: fixed;
     top: 0;
@@ -65,7 +66,7 @@
     transition: 0.3s;
 }
 
-/* Active hamburger (maakt kruisje) */
+/* Active hamburger (creates a cross) */
 .bar.open:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
 }
@@ -78,7 +79,7 @@
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Mobile menu (standaard verborgen) */
+/* Mobile menu (hidden by default) */
 .navbar-links {
     position: absolute;
     padding: 0;
@@ -96,7 +97,7 @@
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
-/* Toon menu als open */
+/* Show menu when open */
 .navbar-links.open {
     opacity: 1;
     visibility: visible;
@@ -104,17 +105,17 @@
 }
 
 
-/* Menu opent naar BOVEN als navbar onderaan is */
+/* Menu opens UP when navbar is at the bottom */
 .navbar-bottom .navbar-links {
     bottom: 60px;
-    /* Hoogte boven de navbar */
+    /* Height above the navbar */
     transform: translateX(-50%) translateY(10px);
 }
 
-/* Menu opent naar BENEDEN als navbar bovenaan is */
+/* Menu opens DOWN when navbar is at the top */
 .navbar-top .navbar-links {
     top: 60px;
-    /* Hoogte onder de navbar */
+    /* Height below the navbar */
     transform: translateX(-50%) translateY(-10px);
 }
 
@@ -140,7 +141,7 @@
 }
 
 
-/* Desktop weergave: Standaard navigatie tonen */
+/* Desktop view: Show default navigation */
 @media screen and (min-width: 768px) {
     .hamburger {
         display: none;
@@ -154,23 +155,18 @@
         bottom: auto;
         width: auto;
         align-items: center;
-        /* Zorgt voor correcte verticale uitlijning */
         opacity: 1;
-        /* Zorg dat de links zichtbaar zijn */
         visibility: visible;
-        /* Zorg dat de links niet verborgen zijn */
         transform: none;
-        /* Reset transform van mobile */
         position: relative;
         margin: 0;
         padding: 0;
         background-color: transparent;
-        /* Verwijder achtergrondkleur van mobile menu */
         transform: none;
     }
 
 
-    /* 🚀 Zorg ervoor dat mobile dropdown-stijlen niet van toepassing zijn */
+    /* Ensure mobile dropdown styles do not apply */
     .navbar-links.dropdown-up,
     .navbar-links.dropdown-down {
         position: static;

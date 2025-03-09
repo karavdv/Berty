@@ -1,1 +1,78 @@
-{}
+{
+  "LTC/EUR": {
+    "websocket": {
+      "_events": {},
+      "_eventsCount": 4,
+      "_binaryType": "nodebuffer",
+      "_closeCode": 1006,
+      "_closeFrameReceived": false,
+      "_closeFrameSent": false,
+      "_closeMessage": {
+        "type": "Buffer",
+        "data": []
+      },
+      "_closeTimer": null,
+      "_errorEmitted": false,
+      "_extensions": {},
+      "_paused": false,
+      "_protocol": "",
+      "_readyState": 0,
+      "_receiver": null,
+      "_sender": null,
+      "_socket": null,
+      "_bufferedAmount": 0,
+      "_isServer": false,
+      "_redirects": 0,
+      "_autoPong": true,
+      "_url": "wss://ws.kraken.com/",
+      "_req": {
+        "_events": {},
+        "_eventsCount": 3,
+        "outputData": [
+          {
+            "data": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: YBRMpiK1qMKADLExYMZJAg==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
+            "encoding": "latin1"
+          }
+        ],
+        "outputSize": 222,
+        "writable": true,
+        "destroyed": false,
+        "_last": true,
+        "chunkedEncoding": false,
+        "shouldKeepAlive": true,
+        "maxRequestsOnConnectionReached": false,
+        "_defaultKeepAlive": true,
+        "useChunkedEncodingByDefault": false,
+        "sendDate": false,
+        "_removedConnection": false,
+        "_removedContLen": false,
+        "_removedTE": false,
+        "strictContentLength": false,
+        "_contentLength": 0,
+        "_hasBody": true,
+        "_trailer": "",
+        "finished": true,
+        "_headerSent": true,
+        "_closed": false,
+        "socket": null,
+        "_header": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: YBRMpiK1qMKADLExYMZJAg==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
+        "_keepAliveTimeout": 0,
+        "method": "GET",
+        "path": "/",
+        "_ended": false,
+        "res": null,
+        "aborted": false,
+        "timeoutCb": null,
+        "upgradeOrConnect": false,
+        "parser": null,
+        "maxHeadersCount": null,
+        "reusedSocket": false,
+        "host": "ws.kraken.com",
+        "protocol": "https:"
+      }
+    },
+    "bots": [
+      1
+    ]
+  }
+}

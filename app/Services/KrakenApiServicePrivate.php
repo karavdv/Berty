@@ -3,10 +3,8 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
-use WebSocket\Client as WebSocketClient;
 use Illuminate\Support\Facades\Log;
 use Exception;
-
 
 class KrakenApiServicePrivate
 {
@@ -21,8 +19,8 @@ class KrakenApiServicePrivate
         $this->apiKey = config('services.kraken.api_key');
         $this->apiSecret = config('services.kraken.api_secret');
         $this->httpClient = new Client([
-            'base_uri' => $this->baseUrl, // Standaard API-basispad
-            'timeout' => 10, // Stel een timeout in (in seconden)
+            'base_uri' => $this->baseUrl,
+            'timeout' => 10, // Timeout in seconds
             'headers' => [
             ],
         ]);
@@ -55,7 +53,7 @@ class KrakenApiServicePrivate
                 'form_params' => $data, 
             ]);
 
-            // Decodeer en log de response
+            // Decode and log response
             $responseBody = json_decode($response->getBody(), true);
             Log::info('API Response:', $responseBody);
 

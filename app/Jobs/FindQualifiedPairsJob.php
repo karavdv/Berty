@@ -31,26 +31,21 @@ class FindQualifiedPairsJob implements ShouldQueue
      */
     public function handle(MarketAnalyzer $marketAnalyzer): void
     {
-
-
         $marketAnalyzer->setup($this->currency, $this->numberMovements, $this->changeRequired);
 
-        file_put_contents(storage_path('logs/custom.log'), "FindQualifiedPairsJob is gestart\n", FILE_APPEND);
-
-        Log::info("Job gestart met parameters", [
+        Log::info("Job FindQualifiedPairs started with parameters", [
             'currency' => $this->currency,
             'numberMovements' => $this->numberMovements,
             'changeRequired' => $this->changeRequired
         ]);
-        Log::info('Job roept findQualifiedPairs() aan', ['currency' => $this->currency, 'numberMovements' => $this->numberMovements, 'changeRequired' => $this->changeRequired]);
 
         $qualifiedPairs = iterator_to_array(
             $marketAnalyzer->findQualifiedPairs($this->currency, $this->numberMovements, $this->changeRequired)
         );
 
-        // Slaat de resultaten op in de cache voor 10 minuten
-        Cache::put('qualified_pairs', $qualifiedPairs, now()->addMinutes(10));
+        // Saves the results in cache for 30 minutes
+        Cache::put('qualified_pairs', $qualifiedPairs, now()->addMinutes(30));
 
-        Log::info('Job voltooid', ['resultaten' => count($qualifiedPairs)]);
+        Log::info('Job FindQualifiedPairs completed', ['results' => count($qualifiedPairs)]);
     }
 }

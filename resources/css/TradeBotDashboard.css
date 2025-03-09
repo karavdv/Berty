@@ -1,5 +1,7 @@
-/* Algemene stijlen */
-.tradebot-dashboard {
+/*TradeBotDashboard.css*/
+
+/* General styles */
+    .tradebot-dashboard {
     max-width: 1200px;
     margin: 20px auto;
     padding: 20px;
@@ -10,13 +12,13 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Titel van het dashboard */
+/* Dashboard title */
 .tradebot-dashboard h2 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-/* Container voor elke bot */
+/* Container for each bot */
 .tradebot-card {
     background: rgb(17, 17, 17);
     border-radius: 2rem;
@@ -25,7 +27,7 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Bot-informatie */
+/* Bot information */
 .tradebot-card h3 {
     margin-top: 0;
     color: #ffffff;
@@ -36,7 +38,7 @@
     color: #ffffff;
 }
 
-/* Status en toggle */
+/* Status and toggle */
 .tradebot-status {
     display: flex;
     align-items: center;
@@ -48,7 +50,7 @@
     margin-right: 10px;
 }
 
-/* Stijlen voor de switch-knop */
+/* Styles for the switch button */
 .tradebot-toggle {
     display: flex;
     align-items: center;
@@ -87,7 +89,6 @@
 }
 
 /* Stop Bot Button */
-
 button {
     display: inline-block;
     color: white;
@@ -118,7 +119,7 @@ button {
     background-color: #26b314;
 }
 
-/* Bot instellingen */
+/* Bot settings */
 .bot-settings {
     margin-top: 15px;
     padding: 10px;
@@ -132,7 +133,7 @@ button {
     color: #ffffff;
 }
 
-/* Tabelopmaak */
+/* Table formatting */
 .trade-table {
     width: 100%;
     border-collapse: collapse;

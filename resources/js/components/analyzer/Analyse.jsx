@@ -1,5 +1,4 @@
 import React from 'react';
-//import '../../../css/Analyse.css';
 import { AnalysisForm } from '../forms/AnalysisForm.jsx';
 import { ResultTable } from './ResultTable.jsx';
 

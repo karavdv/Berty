@@ -4,40 +4,40 @@ import fs from 'fs';
 const subscriptionsFile = 'subscriptions.json';
 let subscriptions = {};
 
-// ✅ Functie om subscriptions te laden bij het starten van de server
+// Function to load subscriptions when the server starts
 export function loadSubscriptions() {
     try {
         if (fs.existsSync(subscriptionsFile)) {
             const data = fs.readFileSync(subscriptionsFile);
-            console.log("✅ Subscriptions geladen vanaf bestand.");
+            console.log("✅ Subscriptions loaded from file.");
             subscriptions = JSON.parse(data);
         }
     } catch (error) {
-        console.error("❌ Fout bij laden van subscriptions:", error);
+        console.error("❌ Error loading subscriptions:", error);
     }
 }
 
-// ✅ Functie om de huidige subscriptions op te halen (getter)
+// Function to get the current subscriptions (getter)
 export function getSubscriptions() {
     return subscriptions;
 }
 
-// ✅ Functie om de huidige subscriptions in te stellen (setter)
+// Function to set the current subscriptions (setter)
 export function setSubscriptions(newSubscriptions) {
     subscriptions = newSubscriptions;
 }
 
-// ✅ Functie om actieve subscriptions op te slaan bij afsluiten
+// Function to save active subscriptions when shutting down
 export function saveSubscriptions() {
     try {
         fs.writeFileSync(subscriptionsFile, JSON.stringify(subscriptions, null, 2));
-        console.log("💾 Actieve subscriptions opgeslagen.");
+        console.log("💾 Active subscriptions saved.");
     } catch (error) {
-        console.error("❌ Fout bij opslaan van subscriptions:", error);
+        console.error("❌ Error saving subscriptions:", error);
     }
 }
 
-// 🛑 Zorg ervoor dat subscriptions worden opgeslagen bij afsluiten
+// Ensure subscriptions are saved on exit
 process.on('SIGINT', () => {
     saveSubscriptions();
     process.exit();
@@ -48,5 +48,5 @@ process.on('SIGTERM', () => {
     process.exit();
 });
 
-// 🚀 Laad subscriptions bij het starten
+// Load subscriptions when starting
 loadSubscriptions();

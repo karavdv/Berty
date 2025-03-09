@@ -1,20 +1,20 @@
 //restartSubscriptions.js
+
 import axios from 'axios';
 import { getSubscriptions, setSubscriptions, saveSubscriptions } from './subscriptionManager.js';
 import { subscribeToPair } from './krakenService.js';
-
 
 const subscriptions = getSubscriptions();
 
 export async function restartSubscriptions() {
     try {
-        // Vraag de lijst van actieve bot-ID's op uit de database (Laravel API)
+        // Fetch the list of active bot IDs from the database (Laravel API)
         const response = await axios.get('http://127.0.0.1:8000/api/active-bots');
-        const activeBotIds = response.data.botIds; // Voorbeeld: [1, 2, 3, 4]
+        const activeBotIds = response.data.botIds; // Example: [1, 2, 3, 4]
 
-        console.log("📌 Actieve bot-ID's uit database:", activeBotIds);
+        console.log("📌 Active bot IDs from database:", activeBotIds, typeof activeBotIds);
 
-        // Loop door de opgeslagen subscriptions
+        // Loop through the saved subscriptions
         Object.keys(subscriptions).forEach(pair => {
             subscriptions[pair].bots.forEach(botId => {
                 if (!activeBotIds.includes(botId)) {
@@ -23,27 +23,25 @@ export async function restartSubscriptions() {
                 }
             });
 
-            // Als er geen bots meer overblijven, sluit de WebSocket en verwijder het abonnement
+            // If no bots remain, close the WebSocket and remove the subscription
             if (subscriptions[pair].bots.length === 0) {
-                console.log(`🛑 Geen actieve bots meer voor ${pair}, WebSocket wordt gesloten.`);
+                console.log(`🛑 No active bots left for ${pair}, closing WebSocket.`);
                 if (typeof subscriptions[pair].websocket.close === 'function') {
                     subscriptions[pair].websocket.close();
                 }
                 delete subscriptions[pair];
+            } else {
+                // If there are still bots for this pair, resubscribe to the pair
+                console.log(`♻️ Resubscribe for ${pair}...`);
+                subscriptions[pair].websocket = subscribeToPair(pair, (price) => {
+                    console.log(`📡 Price update for ${pair}: ${price}`);
+                });
             }
-
-            console.log(`♻️ Herabonneren op ${pair}...`);
-            subscriptions[pair].websocket = subscribeToPair(pair, (price) => {
-                console.log(`📡 Prijsupdate voor ${pair}: ${price}`);
-        
-            });
-
         });
-        setSubscriptions(subscriptions);  // Update de memory
-        saveSubscriptions(subscriptions); // sla wijzigingen op voor bij herstart server
+
+        setSubscriptions(subscriptions);  // Update memory
+        saveSubscriptions(subscriptions); // Save changes for server restart
     } catch (error) {
-        console.error("❌ Fout bij ophalen van actieve bots uit database:", error);
+        console.error("❌ Error fetching active bots from database:", error);
     }
 }
-
-

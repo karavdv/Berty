@@ -18,7 +18,7 @@ export const ResultRow = ({ result }) => {
                         window.open(url, "_blank");
                     }}
                 >
-                    Bekijk grafiek
+                    View chart
                 </button>
             </td>
         </tr>

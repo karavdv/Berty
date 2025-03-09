@@ -8,10 +8,9 @@ export const Navbar = () => {
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
-
     };
 
-    // Detecteer scrollen en verander de navbar-positie
+    // Detect scrolling and change navbar position accordingly
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 50) {
@@ -26,6 +25,7 @@ export const Navbar = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+
     return (
         <nav className={`navbar ${isScrolled ? 'navbar-top' : 'navbar-bottom'}`}>
             <div className="navbar-container">
@@ -38,7 +38,7 @@ export const Navbar = () => {
                     <div className={`bar ${isOpen ? 'open' : ''}`}></div>
                 </div>
 
-                {/* Nav Links - Dynamische dropdown richting */}
+                {/* Nav Links - Dynamic dropdown menu */}
                 <ul className={`navbar-links ${isOpen ? 'open' : ''} ${isScrolled ? 'dropdown-down' : 'dropdown-up'}`}>
                     <li><NavLink to="/" onClick={toggleMenu}>Home</NavLink></li>
                     <li><NavLink to="/analyse" onClick={toggleMenu}>Analyse</NavLink></li>

@@ -16,6 +16,7 @@ class BotRun extends Model
         'last_price',
         'reference_price',
         'top',
+        'workbudget',
         'open_trade_volume',
         'total_traded_volume',
         'last_trade_time',
@@ -23,10 +24,12 @@ class BotRun extends Model
         'is_live',
     ];
 
+    // Automatic typecasting
     protected $casts = [
         'last_price' => 'decimal:8',
         'reference_price' => 'decimal:8',
         'top' => 'decimal:8',
+        'workbudget' => 'decimal:8',
         'open_trade_volume' => 'decimal:8',
         'total_traded_volume' => 'decimal:8',
         'last_trade_time' => 'datetime',
@@ -34,13 +37,13 @@ class BotRun extends Model
         'is_live' => 'boolean',
     ];
 
-    // Relatie met de TradingBot
+    // Relation to TradingBot
     public function tradingBot()
     {
         return $this->belongsTo(TradingBot::class, 'bot_id');
     }
 
-    // GETTERS
+    // Getters
     public function getLastPrice(): float
     {
         return (float) $this->last_price;
@@ -54,6 +57,11 @@ class BotRun extends Model
     public function getTop(): ?float
     {
         return $this->top !== null ? (float) $this->top : null;
+    }
+
+    public function getWorkbudget(): float
+    {
+        return (float) $this->workbudget;
     }
 
     public function getOpenTradeVolume(): float
@@ -100,6 +108,12 @@ class BotRun extends Model
         $this->save();
     }
 
+    public function setWorkbudget(float $profit): void
+    {
+        $this->workbudget += $profit;
+        $this->save();
+    }
+
     public function setOpenTradeVolume(float $volume): void
     {
         $this->open_trade_volume = $volume;
@@ -118,7 +132,7 @@ class BotRun extends Model
         $this->save();
     }
 
-    public function setProfit($profit): void
+    public function setProfit(float $profit): void
     {
         $this->profit += $profit;
         $this->save();

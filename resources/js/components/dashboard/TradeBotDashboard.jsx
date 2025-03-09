@@ -10,7 +10,7 @@ export const TradeBotDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Haal de dashboard data op
+  // Retrieve dashboard data from the API
   const fetchDashboardData = async () => {
     try {
       const response = await fetch('http://127.0.0.1:8000/api/trading/dashboard');
@@ -28,7 +28,7 @@ export const TradeBotDashboard = () => {
   };
 
   useEffect(() => {
-    fetchDashboardData(); //eerste keer dashboard ophalen met alle data
+    fetchDashboardData(); //First time loading dashboard with all data
   }, []);
 
 
@@ -55,7 +55,7 @@ return (
 
         <DeleteBotButton botId={bot.id} setBots={setBots} setError={setError} />
 
-        <p>Budget: €{bot.budget}</p>
+        <p>Budget: €{bot.workbudget}</p>
         <p>Open Trades: €{bot.openTradeVolume ?? 0}</p>
         <p>Profit: €{bot.profit ?? 0}</p>
 

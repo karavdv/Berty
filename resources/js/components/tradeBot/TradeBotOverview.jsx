@@ -13,7 +13,7 @@ export const TradeBotOverview = () => {
 
     return (
         <section className="tradeBot-overview">
-            <p>Check your settings and then dubbel check them!</p>
+            <p>Check your settings and then double check them!</p>
             <p> Clicking the confirm button will start the trading.</p>
 
             <ul>

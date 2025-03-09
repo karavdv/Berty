@@ -16,11 +16,12 @@ class BotTransaction extends Model
         'sold_at'
     ];
 
+    // Automatic typecasting
     protected $casts = [
         'sold_at' => 'datetime',
     ];
 
-    // Relatie met de TradingBot
+    // Relation to TradingBot
     public function tradingBot()
     {
         return $this->belongsTo(TradingBot::class);

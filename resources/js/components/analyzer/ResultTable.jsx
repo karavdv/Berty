@@ -3,12 +3,11 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { results } from "../../components/Signals.js";
 import { ResultRow } from "./ResultRow.jsx";
 import "../../../css/ResultTable.css";
-import { useSignalEffect } from "@preact/signals-react";
 
 export const ResultTable = () => {
     useSignals();
 
-        // Verberg de tabel als er geen resultaten zijn
+        // Hide table if there are no results
         if (!results.value || results.value.length === 0) {
             return null;
         }

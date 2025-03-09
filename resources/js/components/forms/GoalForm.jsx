@@ -12,18 +12,18 @@ export const GoalForm = () => {
     const validateForm = () => {
         let formErrors = {};
 
-        // Validatie voor capital (moet een nummer hoger dan 0 zijn)
+        // Validation for capital (must be a float higher than 0)
         if (!capital || isNaN(capital) || parseFloat(capital) <= 0) {
             formErrors.capital = 'Capital must be a positive number.';
         }
 
-        // Validatie voor days (moet een integer tussen 1 en 7 zijn)
+        // Validation for days (must be an integer between 1 and 7)
         const daysInt = parseInt(days, 10);
         if (!days || isNaN(daysInt) || daysInt < 1 || daysInt > 7) {
             formErrors.days = 'Trading days must be an integer between 1 and 7.';
         }
 
-        // Validatie voor margin (moet een nummer hoger dan 0 zijn)
+        // Validation for margin (must be a float higher than 0)
         if (!margin || isNaN(margin) || parseFloat(margin) <= 0) {
             formErrors.margin = 'Profit margin must be a positive number.';
         }

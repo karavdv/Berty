@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\KrakenApiServicePrivate;
-use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\App;
 
 class TradingController extends Controller
 {
@@ -15,15 +13,6 @@ class TradingController extends Controller
     public function __construct(KrakenApiServicePrivate $krakenApi)
     {
         $this->krakenApi = $krakenApi;
-    }
-
-
-
-    // Endpoint om de gesimuleerde trades op te halen (optioneel)
-    public function getDryRunTrades()
-    {
-        $trades = Cache::get('dry_run_trades', []);
-        return response()->json($trades);
     }
 
     public function getOpenOrders()
@@ -64,21 +53,3 @@ class TradingController extends Controller
         }
     }
 }
-
-
-/*
-class TradingController extends Controller
-{
-    protected $krakenApi;
-
-    public function __construct(KrakenApiServicePrivate $krakenApi)
-    {
-        $this->krakenApi = $krakenApi;
-    }
-
-    public function testApi()
-    {
-        $response = $this->krakenApi->sendRequest('/0/private/Balance');
-        return response()->json($response);
-    }
-}*/

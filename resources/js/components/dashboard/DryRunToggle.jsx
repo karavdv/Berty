@@ -3,7 +3,7 @@ import React from 'react';
 export const DryRunToggle = ({ botId, dryRun, setBots, setError }) => {
 
   const handleToggle = async () => {
-    const newStatus = dryRun ? false : true; // Wissel tussen true/false
+    const newStatus = dryRun ? false : true;
 
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/trading/${botId}/toggle`, {
@@ -18,7 +18,7 @@ export const DryRunToggle = ({ botId, dryRun, setBots, setError }) => {
 
       const updatedBot = await response.json();
 
-      // Update alleen de gewijzigde bot in de state
+      // Update only the changed bot in the state
       setBots(prevBots =>
         prevBots.map(bot => (bot.id === botId ? updatedBot : bot))
       );
@@ -35,7 +35,7 @@ export const DryRunToggle = ({ botId, dryRun, setBots, setError }) => {
       <input
         type="checkbox"
         checked={!dryRun} // true = unchecked (dry-run mode)
-        onChange={handleToggle} // Direct de toggle-functie aanroepen
+        onChange={handleToggle} 
       />
     </label>
   );

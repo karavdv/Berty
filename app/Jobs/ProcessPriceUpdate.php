@@ -2,11 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Models\TradingBot;
 use App\Services\KrakenApiServicePrivate;
-use App\Services\TradingBotService;
+use App\Services\PriceUpdateService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -28,10 +26,10 @@ class ProcessPriceUpdate implements ShouldQueue
     {
 
 
-        Log::info("📊 Verwerk prijsupdate voor bot-ID {$this->botId}");
+        Log::info("📊 process priceupdate for bot-ID {$this->botId}");
 
-        // Start de bot service
-        $botService = new TradingBotService(new KrakenApiServicePrivate(), $this->botId);
+        // Start processing price update
+        $botService = new PriceUpdateService(new KrakenApiServicePrivate(), $this->botId);
         $botService->processPriceUpdate();
     }
 }

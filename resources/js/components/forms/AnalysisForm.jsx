@@ -13,18 +13,15 @@ export const AnalysisForm = () => {
     const validateForm = () => {
         let formErrors = {};
 
-        // Validatie voor currency 
         if (!selectedCurrency.value) {
             formErrors.selectedCurrency = 'Currency must be chosen.';
         }
 
-        // Validatie voor numberMovements (moet een integer en minstens 1 zijn )
         const numberMovementsInt = parseInt(numberMovements, 10);
         if (!numberMovements || isNaN(numberMovementsInt) || numberMovementsInt < 1) {
             formErrors.numberMovements = 'Trading days must be a whole number and at least 1.';
         }
 
-        // Validatie voor change (moet een nummer hoger dan 0 zijn)
         if (!change || isNaN(change) || parseFloat(change) <= 0) {
             formErrors.change = 'give a % higher than 0. The program will calculate the negative variant';
         }
@@ -36,30 +33,30 @@ export const AnalysisForm = () => {
     const pollStatus = async () => {
 
         let attempts = 0;
-        const maxAttempts = 20; // Stop na 20 pogingen (2 minuten met interval 6 sec is)
-        const interval = 6000; // 6 seconden
+        const maxAttempts = 20; // Stop after 20 attempts (2 minutes with interval of 6 sec )
+        const interval = 6000; // 6 seconds
 
 
         const checkStatus = async () => {
-            console.log(`Polling attempt ${attempts}`); // Debugging
+            console.log(`Polling attempt ${attempts}`);
 
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/analyze/results');
                 const data = await response.json();
 
-                console.log("Fetched results:", data); // Debug output
+                console.log("Fetched results:", data);
 
 
                 if (data.status === 'complete') {
                     if (data.results.length === 0) {
                         throw new Error('There are no currency pairs that meet these criteria.');
-                        loading.value = false; //button resetten
+                        loading.value = false; //button reset
                     }
-                    results.value = [...data.results]; // Resultaten laten updaten door nieuwe array aan te maken
-                    loading.value = false; //button resetten
+                    results.value = [...data.results]; // Update results by creating a new array
+                    loading.value = false; //button reset
                 } else if (attempts < maxAttempts) {
                     attempts++;
-                    setTimeout(checkStatus, interval); // Probeer opnieuw
+                    setTimeout(checkStatus, interval); // Try again after interval
                 } else {
                     throw new Error('Analysis timed out');
                 }
@@ -77,12 +74,12 @@ export const AnalysisForm = () => {
         if (!validateForm()) return;
 
         loading.value = true;
-        errors.value = {}; // Reset eventuele eerdere fouten
+        errors.value = {}; // Reset any previous errors
         results.value = [];
 
         try {
 
-            // Start de analyse
+            // Start the analysis
             const startResponse = await fetch('http://127.0.0.1:8000/api/analyze', {
 
                 method: 'POST',
@@ -96,7 +93,7 @@ export const AnalysisForm = () => {
                 throw new errors('Error starting analysis');
             }
 
-            // Start polling voor de status
+            // Start polling for the status
             pollStatus();
         } catch (err) {
             errors.value = { global: err.message };

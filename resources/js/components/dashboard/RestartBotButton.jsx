@@ -9,19 +9,19 @@ export const RestartBotButton = ({ botId, setBots, setError }) => {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to start bot: ${response.status}`);
+        throw new Error(`Failed to restart bot: ${response.status}`);
       }
 
       const updatedBot = await response.json();
 
-      // Update de botstatus in het dashboard
+      // Update botstatus in state
       setBots(prevBots =>
         prevBots.map(bot => (bot.id === botId ? updatedBot.bot : bot))
       );
 
-      console.log('Bot gestart:', updatedBot);
+      console.log('Bot restarted:', updatedBot);
     } catch (error) {
-      console.error('Fout bij starten bot:', error);
+      console.error('Error restarting bot:', error);
       setError(error.message);
     }
   };

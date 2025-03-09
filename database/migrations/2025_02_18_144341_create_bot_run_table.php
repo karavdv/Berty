@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->decimal('last_price', 15, 8);
             $table->decimal('reference_price', 15, 8);
             $table->decimal('top', 15, 8)->nullable();
+            $table->decimal('workbudget', 15, 8);
             $table->decimal('open_trade_volume', 15, 8);
             $table->decimal('total_traded_volume', 15, 8)->default(0);
             $table->timestamp('last_trade_time')->nullable();

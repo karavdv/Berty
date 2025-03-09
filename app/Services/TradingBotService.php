@@ -3,210 +3,232 @@
 namespace App\Services;
 
 use App\Models\TradingBot;
-use App\Models\BotRun;
-use App\Models\BotTransaction;
-use App\Services\KrakenApiServicePrivate;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Exception;
+use App\Services\KrakenApiServicePrivate;
 
 class TradingBotService
 {
+    protected Client $httpClient;
     protected KrakenApiServicePrivate $krakenApi;
-    protected int $botId;
-    protected ?TradingBot $bot = null;
-    protected ?BotRun $botRun = null;
 
-    public function __construct(
-        KrakenApiServicePrivate $krakenApi,
-        int $botId
-    ) {
+    public function __construct(KrakenApiServicePrivate $krakenApi)
+    {
+        $this->httpClient = new Client(['timeout' => 10]); // Set a timeout for API calls
         $this->krakenApi = $krakenApi;
-        $this->botId = $botId;
-        $this->bot = TradingBot::with('botRun')->find($this->botId);
-
-        if (!$this->bot || !$this->bot->botRun) {
-            Log::error("❌ Fout: Bot-ID {$this->botId} of bijhorende BotRun niet gevonden in database.");
-            return;
-        }
-
-        // Haal botRun op uit de relatie
-        $this->botRun = $this->bot->botRun;
-    }
-
-
-    /**
-     * Verwerkt een nieuwe prijsupdate. Deze methode wordt event-driven aangeroepen .
-     */
-    public function processPriceUpdate(): void
-    {
-        if (!$this->botRun) {
-            Log::error("⛔ BotRun ontbreekt, verwerking afgebroken.");
-            return;
-        }
-
-        Log::info("Prijsupdate ontvangen in service voor {$this->bot->getPair()} {$this->bot->getBotId()}: €{$this->botRun->getLastPrice()}");
-
-        // Controleer of de bot als 'stopped' is gemarkeerd in de database
-        if ($this->bot->getStatus() === 'stopped') {
-            Log::info("Bot status is 'stopped'. Stoppen met verwerken.");
-            return;
-        }
-
-        // Update de referencePrice: als er een hogere prijs is, gebruik deze als nieuwe basis. Dit zorgt ervoor dat de daling berekend wordt vanaf de nieuwste hoogste prijs en niet vanaf de laatste koopprijs.
-        if (is_null($this->botRun->getReferencePrice()) || $this->botRun->getLastPrice() > $this->botRun->getReferencePrice()) {
-            $this->botRun->setReferencePrice($this->botRun->getLastPrice());
-            Log::info("Nieuwe hoogste prijs, referencePrice ingesteld op €{$this->botRun->getLastPrice()}");
-        }
-
-        if (BotTransaction::where('trading_bot_id', $this->botId)->doesntExist()) {
-            if ($this->bot->getStartBuy() <= $this->botRun->getLastPrice()) {
-                Log::info("✅ The first buy has been reached.");
-                $this->placeBuyOrder($this->bot->getTradeSize(), $this->botRun->getLastPrice());
-            }
-            return;
-        }
-
-        // Controleer open trades en verkoop indien nodig
-        $this->checkAndProcessSellOrders();
-
-        // Controleer of een nieuwe aankoop mogelijk is
-        $this->checkAndProcessBuyOrder();
-    }
-
-
-    /**
-     * Controleert of open trades verkocht moeten worden en plaatst verkooporders indien nodig.
-     */
-    private function checkAndProcessSellOrders(): void
-    {
-        $openTrades = BotTransaction::where('trading_bot_id', $this->botId)
-            ->where('sold', false)
-            ->get();
-
-        if ($openTrades->isEmpty()) {
-            Log::info("ℹ️ Geen open trades om te verwerken.");
-            return;
-        }
-
-        foreach ($openTrades as $trade) {
-            $profitGain = (($this->botRun->getLastPrice() - $trade->price) / $trade->price) * 100;
-
-            Log::info("📊 Profit gain voor trade €{$trade->price}: " . round($profitGain, 2) . "%");
-
-            if ($profitGain >= $this->bot->getProfitThreshold()) {
-                Log::info("💰 Profit target bereikt! Verkoop wordt uitgevoerd.");
-                $this->placeSellOrder($trade, $this->botRun->getLastPrice(), $profitGain);
-            }
-        }
-    }
-
-
-    /**
-     * Controleert of een nieuwe aankoop moet worden gedaan en plaatst een buy order indien nodig.
-     */
-    private function checkAndProcessBuyOrder(): void
-    {
-
-        if (is_null($this->botRun->getReferencePrice()) || $this->botRun->getReferencePrice() == 0) {
-            Log::warning("⚠️ Reference price is ongeldig. Koopcontrole afgebroken.");
-            return;
-        }
-
-        $cumulativeDrop = (($this->botRun->getReferencePrice() - $this->botRun->getLastPrice()) / $this->botRun->getReferencePrice()) * 100;
-
-        Log::info("📉 Cumulatieve drop: " . round($cumulativeDrop, 2) . "% (Ref: €{$this->botRun->getReferencePrice()}, Huidige: €{$this->botRun->getLastPrice()})");
-
-        if (
-            $cumulativeDrop >= $this->bot->getDropThreshold() &&
-            $this->botRun->getOpenTradeVolume() + $this->bot->getTradeSize() <= $this->bot->getBudget()
-        ) {
-            /* //check if the distance to the top of the chart is bigger then the limit set bu the user, if it is set.
-            if ($this->bot->getTopEdge() !== null && $this->bot->getTopEdge() !== 0){
-                if ($this->bot->getTopEdge() > (($this->botRun->getTop() - $this->botRun->getLastPrice()) /$this->botRun->getTop())*100){
-                    Log::info("⚠️ the current price is too close to the top, the order can not be placed. Current Top: {$this->botRun->getTop()}" );
-                    return;
-                }
-            }*/
-
-            Log::info("✅ Drop threshold bereikt, koop wordt uitgevoerd.");
-            $this->placeBuyOrder($this->bot->getTradeSize(), $this->botRun->getLastPrice());
-
-        }
     }
 
     /**
-     * Registreer een kooporder en slaat deze op in de database.
+     * Create a new trading bot and initialize its run data.
      */
-    public function placeBuyOrder(float $volume, float $price): void
+    public function createBot(array $validatedData)
     {
-        // Update open trade volume and reset reference price
-        $this->botRun->setOpenTradeVolume($this->botRun->getOpenTradeVolume() + $this->bot->getTradeSize());
-        $this->botRun->setReferencePrice($this->botRun->getLastPrice());
+        $bot = TradingBot::create([
+            'pair'             => $validatedData['pair'],
+            'trade_size'       => $validatedData['tradeSize'],
+            'drop_threshold'   => $validatedData['drop'],
+            'profit_threshold' => $validatedData['profit'],
+            'start_buy'        => $validatedData['startBuy'],
+            'budget'           => $validatedData['budget'],
+            'accumulate'       => $validatedData['accumulate'] ?? false,
+            'top_edge'         => $validatedData['topEdge'] ?? null,
+            'stop_loss'        => $validatedData['stopLoss'] ?? null,
+            'dry_run'          => true,
+            'status'           => 'active',
+        ]);
 
-        if ($this->bot->getDryRun()) {
-            BotTransaction::create([
-                'trading_bot_id' => $this->botId,
-                'type' => 'buy',
-                'volume' => $volume,
-                'price' => $price,
-                'sold' => false,
-                'sell_amount' => null,
+        // Initialize the bot run data
+        $bot->botRun()->create([
+            'last_price'          => 0,
+            'reference_price'     => 0,
+            'top'                 => 0,
+            'workbudget'          => $validatedData['budget'],
+            'open_trade_volume'   => 0,
+            'total_traded_volume' => 0,
+            'is_live'             => false
+        ]);
+
+
+        if (!$bot->id) {
+            Log::error("Failed to create trading bot.");
+            throw new Exception("Failed to create the bot.");
+        }
+
+        Log::info("Trading bot successfully created with ID: " . $bot->id);
+
+        return $bot;
+    }
+
+    /**
+     * Subscribe the bot to the Node.js WebSocket service.
+     */
+    public function subscribeBot($pair, $botId)
+    {
+        $client = new Client();
+        try {
+            $response = $client->post('http://127.0.0.1:3000/subscribe', [
+                'json' => [
+                    'pair'  => $pair,
+                    'botId' => $botId,
+                ],
+                'timeout' => 10,
             ]);
 
-            Log::info("🛒 Dry run: Buy order opgeslagen in database.");
-            return;
-        }
-        /*try {
-            $response = $this->krakenApi->sendRequest('/0/private/AddOrder', [
-                'pair'      => $this->bot->getPair(),
-                'type'      => 'buy',
-                'ordertype' => 'market',
-                'volume'    => $volume,
-            ]);
-            Log::info("Buy order geplaatst:", $response);
+            $body = json_decode($response->getBody(), true);
+            Log::info("✅ Websocket subscription started for bot-ID: {$botId}, pair: {$pair}");
+
+            return $body;
         } catch (\Exception $e) {
-            Log::error("Fout bij plaatsen buy order: " . $e->getMessage());
-        }*/
+            Log::error("❌ Error starting websocket subscription for {$pair}, bot-ID {$botId}: " . $e->getMessage());
+            return null;
+        }
     }
 
     /**
-     * Registreert een verkooporder en slaat deze op in de database.
+     * Retrieves all bots and their transactions to show on the dashboard
      */
-    public function placeSellOrder(BotTransaction $trade, float $currentPrice, float $profitGain): void
+    public function dashboard()
     {
-        // Update open trade volume
-        $this->botRun->setOpenTradeVolume($this->botRun->getOpenTradeVolume() - $this->bot->getTradeSize());
+        // Retrieve all bots with associated botRun and transactions
+        $bots = TradingBot::with(['botRun', 'transactions'])->get();
 
-        if ($this->bot->getDryRun()) {
-            $sellAmount = $trade->volume * (1+($profitGain/100));
-            $trade->update([
-                'sold' => true,
-                'sell_amount' => $sellAmount,
-                'sold_at' => now(),
-            ]);
+        // Transform bot-data for front-end
+        $result = $bots->map(function ($bot) {
+            return [
+                'id'               => $bot->id,
+                'pair'             => $bot->pair,
+                'status'           => $bot->status,
+                'budget'           => round($bot->budget, 2),
+                'trade_size'       => round($bot->trade_size, 2),
+                'drop_threshold'   => $bot->drop_threshold,
+                'profit_threshold' => $bot->profit_threshold,
+                'start_buy'        => $bot->start_buy,
+                'accumulate'       => $bot->accumulate,
+                'top_edge'         => $bot->top_edge ?? null,
+                'stop_loss'        => $bot->stop_loss ?? null,
+                'dry_run'          => $bot->dry_run,
+                'created_at'       => $bot->created_at->toDateTimeString(),
+                'updated_at'       => $bot->updated_at->toDateTimeString(),
 
-            $this->botRun->setProfit($sellAmount - $trade->volume);
+                // Data from botRun
+                'workbudget'          => round($bot->botRun->workbudget, 2),
+                'openTradeVolume'   => round(optional($bot->botRun)->open_trade_volume ?? 0, 2),
+                'totalTradedVolume' => round(optional($bot->botRun)->total_traded_volume ?? 0, 2),
+                'profit' => round(optional($bot->botRun)->profit ?? 0, 2),
 
-            if ($this->bot->getAccumulate()){
-                $this->bot->setBudget($this->bot->getBudget()+($sellAmount - $trade->volume));
-            }
+                // Transactions
+                'trades' => $bot->transactions->map(function ($transaction) {
+                    return [
+                        'buyTime'   => $transaction->created_at->toDateTimeString(),
+                        'buyPrice'  => $transaction->price,
+                        'volume'    => $transaction->volume,
+                        'sold'      => $transaction->sold,
+                        'sellTime'  => $transaction->sold_at ? $transaction->sold_at->toDateTimeString() : null, // Gebruik de nieuwe timestamp
+                        'sellAmount' => $transaction->sell_amount ?? null,
+                    ];
+                }),
+            ];
+        });
 
-            Log::info("💰 Dry run: Sell order opgeslagen in database.", [
-                'sell_amount' => $sellAmount,
-                'current_price' => $currentPrice
-            ]);
-            return;
+        return $result;
+    }
+
+    /**
+     * Status toggle; dry-run (true) and live (false).
+     */
+    public function toggle(bool $status, $botId)
+    {
+        $bot = TradingBot::findOrFail($botId);
+        $bot->dry_run = $status;
+        $bot->save();
+
+        return $bot;
+    }
+
+    /**
+     * Ends bot activity by changing status in database. The websocket subscription is terminated.
+     */
+    public function stopBot($botId)
+    {
+        $bot = TradingBot::findOrFail($botId);
+        $bot->status = 'stopped';
+        $bot->save();
+
+        // Sends request to the WebSocket-service to terminate the subscription.
+        Http::post('http://127.0.0.1:3000/unsubscribe', [
+            'pair' => $bot->pair,
+            'botId' => $bot->id,
+        ]);
+        return $bot;
+    }
+
+    /**
+     * After stopping the bot, it can be restarted. The status is updated in the database and the subscription to the websocket is restarted.
+     */
+    public function restartBot($botId)
+    {
+        Log::info("🔍 Restarting bot with ID: " . $botId);
+
+        $bot = TradingBot::find($botId);
+        if (!$bot) {
+            Log::error("❌ Bot not found: " . $botId);
+            return response()->json(['error' => 'Bot not found'], 404);
         }
-        /*try {
-            $response = $this->krakenApi->sendRequest('/0/private/AddOrder', [
-                'pair'      => $this->bot->getPair(),
-                'type'      => 'sell',
-                'ordertype' => 'market',
-                'volume'    => $trade['volume'],
+
+        $bot->status = 'active';
+        $bot->save();
+
+        try {
+            // Sends request to the WebSocket-service to restart the subscription.
+            Http::post('http://127.0.0.1:3000/subscribe', [
+                'pair' => $bot->pair,
+                'botId' => $bot->id,
             ]);
-            Log::info("Sell order geplaatst:", $response);
+            Log::info("✅ WebSocket-subscription started for bot-ID: {$botId}");
         } catch (\Exception $e) {
-            Log::error("Fout bij plaatsen sell order: " . $e->getMessage());
-        }*/
+            Log::error("❌ Error while terying to subscribe to WebSocket: " . $e->getMessage());
+            return response()->json(['error' => 'Could not start subscription to WebSocket'], 500);
+        }
+
+        return ['message' => 'Bot restarted and subscribed to WebSocket.', 'bot' => $bot];
+    }
+
+    /**
+     * Remove a bot permanently from the database
+     */
+    public function deleteBot($botId)
+    {
+        $bot = TradingBot::find($botId);
+
+        if (!$bot) {
+            return response()->json(['error' => 'Bot not found'], 404);
+        }
+
+        $bot->delete();
+
+        try {
+            Http::post('http://127.0.0.1:3000/unsubscribe', [
+                'pair' => $bot->pair,
+                'botId' => $bot->id,
+            ]);
+            Log::info("❌ WebSocket subscription succesfully ended for bot-ID: {$botId}");
+        } catch (\Exception $e) {
+            Log::error("❌ Error terminating WebSocket subscription: " . $e->getMessage());
+            return response()->json(['error' => 'Could not terminate subscription to WebSocket'], 500);
+        }
+
+        return ['message' => 'Bot succesfully deleted'];
+    }
+
+    public function getActiveBots()
+    {
+        // Retrieve all active bot-ID's
+        $activeBots = TradingBot::where('status', 'active')->pluck('id');
+
+        return [
+            'botIds' => $activeBots
+        ];
     }
 }

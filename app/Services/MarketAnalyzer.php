@@ -30,7 +30,7 @@ class MarketAnalyzer
         $ohlcData = $data['result'][$pair] ?? null;
 
         if (!is_array($ohlcData) || empty($ohlcData)) {
-            Log::warning("Geen geldige OHLC data voor paar: $pair");
+            Log::warning("No valid OHLC data for pair $pair");
             return null;
         }
 
@@ -46,23 +46,23 @@ class MarketAnalyzer
     {
         $rises = 0;
         $declines = 0;
-        $startValue = (float)$data[0][1]; // Start met de Open van de eerste candle
+        $startValue = (float)$data[0][1]; // Start with Open from the first candle
 
         foreach ($data as $candle) {
             $currentClose = (float)$candle[4];
 
             if ($currentClose <= 0 || $startValue <= 0) {
-                continue; // Sla ongeldige candles over
+                continue; // Skip invalid candles
             }
 
             $change = (($currentClose - $startValue) / $startValue) * 100;
 
             if ($change >= $changeRequired) {
                 $rises++;
-                $startValue = $currentClose; // Reset bij een stijging
+                $startValue = $currentClose; // Reset with rise
             } elseif ($change <= -$changeRequired) {
                 $declines++;
-                $startValue = $currentClose; // Reset bij een daling
+                $startValue = $currentClose; // Reset with decline
             }
         }
 
@@ -72,21 +72,21 @@ class MarketAnalyzer
 
     public function findQualifiedPairs(string $currency, int $numberMovements, float $changeRequired): \Generator
     {
-        Log::info('findQualifiedPairs() gestart', ['currency' => $currency]);
+        Log::info('findQualifiedPairs() started', ['currency' => $currency]);
         
         $currencyPairs = new CurrencyPairs($this->apiConnection);
         $pairs = $currencyPairs->getPairsForCurrency($currency);
         
-        Log::info('Aantal paren opgehaald:', ['count' => count($pairs)]);
+        Log::info('Pairs retrieved:', ['count' => count($pairs)]);
 
         $promises = [];
 
-        // Maak asynchrone aanvragen aan
+        // Create asynchronous request
         foreach ($pairs as $pair) {
             $promises[$pair] = $this->apiConnection->publicRequest('OHLC', ['pair' => $pair, 'interval' => 60]);
         }
 
-        // Wacht tot alle promises zijn vervuld
+        // Wait until all promises are fulfilled
         $responses = Utils::settle($promises)->wait();
 
         if (empty($responses)) {
@@ -94,16 +94,16 @@ class MarketAnalyzer
             return;
         }
 
-        // Verwerk de resultaten
+        // Process results
         foreach ($responses as $pair => $response) {
             if ($response['state'] === 'fulfilled') {
-                $data = $response['value']; // Ontvang de API-response
+                $data = $response['value']; // Receive API-response
                 $analyzed = $this->analyzePair($pair, $data, $numberMovements, $changeRequired);
                 if ($analyzed) {
-                    yield $analyzed; // Lever het resultaat op via de generator
+                    yield $analyzed; // Deliver the result via the generator
                 }
             } else {
-                Log::error("API-aanroep mislukt voor paar: $pair", ['error' => $response['reason']]);
+                Log::error("API call failed for pair $pair", ['error' => $response['reason']]);
             }
         }
     }
