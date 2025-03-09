@@ -192,7 +192,7 @@ class TradingBotService
             return response()->json(['error' => 'Could not start subscription to WebSocket'], 500);
         }
 
-        return ['message' => 'Bot restarted and subscribed to WebSocket.', 'bot' => $bot];
+        return $bot;
     }
 
     /**

@@ -32,7 +32,7 @@ app.post('/subscribe', (req, res) => {
         console.log(`🆕 Starting new WebSocket subscription for ${pair}`);
         subscriptions[pair] = {
             websocket: subscribeToPair(pair, (price) => {
-                console.log(`📡 Price update for ${pair}: ${price}`);
+                console.log(`📡 Price update for ${pair}`);
             }),
             bots: [botId]
         };
