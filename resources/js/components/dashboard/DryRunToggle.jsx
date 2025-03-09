@@ -20,7 +20,7 @@ export const DryRunToggle = ({ botId, dryRun, setBots, setError }) => {
 
       // Update only the changed bot in the state
       setBots(prevBots =>
-        prevBots.map(bot => (bot.id === botId ? updatedBot : bot))
+        prevBots.map(bot => (bot.id === botId ? { ...bot, dry_run: updatedBot.dry_run } : bot))
       );
 
     } catch (err) {

@@ -16,7 +16,7 @@ export const StopBotButton = ({ botId, setBots, setError }) => {
       
       // Update bot status in state
       setBots(prevBots =>
-        prevBots.map(bot => (bot.id === botId ? updatedBot : bot))
+        prevBots.map(bot => (bot.id === botId ? { ...bot, status: updatedBot.status } : bot))
       );
 
       console.log('Bot stopped:', updatedBot);

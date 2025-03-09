@@ -30,7 +30,7 @@
         "_eventsCount": 3,
         "outputData": [
           {
-            "data": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: YBRMpiK1qMKADLExYMZJAg==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
+            "data": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: KKV/3eMPd4u/Vfd7K/kDBA==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
             "encoding": "latin1"
           }
         ],
@@ -55,7 +55,7 @@
         "_headerSent": true,
         "_closed": false,
         "socket": null,
-        "_header": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: YBRMpiK1qMKADLExYMZJAg==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
+        "_header": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: KKV/3eMPd4u/Vfd7K/kDBA==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
         "_keepAliveTimeout": 0,
         "method": "GET",
         "path": "/",

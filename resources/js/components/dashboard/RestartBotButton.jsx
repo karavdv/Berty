@@ -16,7 +16,7 @@ export const RestartBotButton = ({ botId, setBots, setError }) => {
 
       // Update botstatus in state
       setBots(prevBots =>
-        prevBots.map(bot => (bot.id === botId ? updatedBot.bot : bot))
+        prevBots.map(bot => (bot.id === botId ? { ...bot, status: updatedBot.status } : bot))
       );
 
       console.log('Bot restarted:', updatedBot);
