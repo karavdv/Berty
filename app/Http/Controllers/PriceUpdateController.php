@@ -27,7 +27,7 @@ class PriceUpdateController extends Controller
             return response()->json(['error' => 'Bot not found'], 404);
         }
 
-        // update last price en top in de database naar de net ontvangen gegevens
+        // update last price and top in database to new data
         $bot->botRun->update(['last_price' => $validated['price']]);
        
         // Retrieve the current top value
