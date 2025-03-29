@@ -63,6 +63,7 @@ class PriceUpdateService
                 Log::info("✅ The first buy has been reached.");
                 $this->placeBuyOrder($this->bot->getTradeSize(), $this->botRun->getLastPrice());
             }
+            Log::info("⛔ The first buy has not been reached.");
             return;
         }
 

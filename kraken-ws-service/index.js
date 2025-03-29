@@ -8,6 +8,7 @@ import { WebSocketServer } from 'ws'; // Use named import
 import { subscribeToPair } from './krakenService.js';
 import { getSubscriptions, setSubscriptions, saveSubscriptions } from './subscriptionManager.js';
 import { restartSubscriptions } from './restartSubscriptions.js';
+import { startHistoricalData } from './startHistoricalData.js';
 
 
 const app = express();
@@ -28,27 +29,31 @@ app.post('/subscribe', (req, res) => {
     }
 
     // Check if there already is a WebSocket connection for this currency pair
-    if (!subscriptions[pair]) {
-        console.log(`🆕 Starting new WebSocket subscription for ${pair}`);
-        subscriptions[pair] = {
-            websocket: subscribeToPair(pair, (price) => {
-                console.log(`📡 Price update for ${pair}`);
-            }),
-            bots: [botId]
-        };
-    }
+    (async () => {
+        if (!subscriptions[pair]) {
+            console.log(`🆕 Starting new WebSocket subscription for ${pair}`);
+            const historicalData = await startHistoricalData(pair);
+            console.log(`✅ Historical data for ${pair} arrived in index.  ${JSON.stringify(historicalData)}`);
+            subscriptions[pair] = {
+                websocket: subscribeToPair(pair),
+                bots: [botId],
+                historicalData: historicalData,
+            };
+        }
+    
 
     // Add botId if it is not already in the array
     if (!subscriptions[pair].bots.includes(botId)) {
-    subscriptions[pair].bots.push(botId);
-  }
-  console.log(`✅ Bot ${botId} added to updates for ${pair}`);
+        subscriptions[pair].bots.push(botId);
+    }
+    console.log(`✅ Bot ${botId} added to updates for ${pair}`);
 
     setSubscriptions(subscriptions);  // Update memory
     saveSubscriptions(subscriptions); // Save changes for server restart
 
 
     res.json({ message: `Subscription started for bot ${botId} with currency pair ${pair}` });
+})();
 });
 
 app.post('/unsubscribe', (req, res) => {

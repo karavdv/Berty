@@ -2,7 +2,7 @@
 import WebSocket from 'ws';
 import dotenv from 'dotenv';
 import axios from 'axios';
-import { getSubscriptions } from './subscriptionManager.js';
+import { getSubscriptions, updatePriceHistory } from './subscriptionManager.js';
 
 dotenv.config();
 
@@ -47,18 +47,19 @@ export function subscribeToPair(pair, onMessageCallback, interval = 1) {
             if (Array.isArray(data) && data.length > 1 && data[1].length >= 7) {
                 const [time, open, high, low, close, vwap, volume, count] = data[1];
                 console.log(`📊 OHLC update for ${pair} - Open: ${open}, High: ${high}, Low: ${low}, Close: ${close}`);
-                
-                // Check if the closing price has changed before sending the update to back-end
+
+                // Check if the closing price has changed before sending the update for processing
                 if (lastData[pair] !== close) {
                     lastData[pair] = close;
                     console.log(`📡 lastData ${lastData[pair]}`);
 
+                    const maxPrice = updatePriceHistory(pair, high);
+
                     subscriptions[pair].bots.forEach(botId => {
-                        // Send the price (close) to back-end
                         axios.post('http://127.0.0.1:8000/api/price-update', {
                             pair: pair,
                             price: close, // Send the closing price
-                            top: high, // Send high to determine the top of the chart
+                            top: maxPrice, // Send max price from last 7 days to determine the top of the chart
                             botId: botId
                         }).catch(error => {
                             console.error("❌ Error sending OHLC update to back-end:", error);
