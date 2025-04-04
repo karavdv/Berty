@@ -54,6 +54,7 @@ export function subscribeToPair(pair, onMessageCallback, interval = 1) {
                     console.log(`📡 lastData ${lastData[pair]}`);
 
                     const maxPrice = updatePriceHistory(pair, high);
+                    console.log(`📈 Current Max Price: ${maxPrice}`);
 
                     subscriptions[pair].bots.forEach(botId => {
                         axios.post('http://127.0.0.1:8000/api/price-update', {

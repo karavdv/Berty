@@ -32,9 +32,13 @@ class PriceUpdateController extends Controller
        
         // Retrieve the current top value
         $currentTop = $bot->botRun->top;
-        // Update only if the new value is higher
-        if ($validated['top'] > $currentTop) {
+        Log::info("Current top value: {$currentTop}");
+        // Update only if the new value is not the same as the current one
+        // Using a small margin of error to compare floating point numbers (111.11 and 111.1100000 are not seen as equal with !== check)
+        $epsilon = 0.00000001; // Define margin of error
+        if (abs($validated['top'] - $currentTop) > $epsilon) {
             $bot->botRun->update(['top' => $validated['top']]);
+            Log::info("Top value updated to: {$validated['top']}");
         }
 
         // Start processing queue with only bot ID instead of bot entity to prevent issues with serialisation.

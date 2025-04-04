@@ -27,8 +27,8 @@ export async function startHistoricalData(pair) {
                     // ohlc array: [time, open, high, low, close, vwap, volume, count]
                     const [time, open, high, low, close, vwap, volume, count] = ohlc;
                     historicalData.push({
-                        time: time,
-                        price: high
+                        day: time/ 86400, // Convert time to days since epoch
+                        maxPrice: high
                     });
                 });
                 console.log(`✅ Historical data for ${pair} loaded.  ${JSON.stringify(historicalData)}`);

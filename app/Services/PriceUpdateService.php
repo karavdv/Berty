@@ -55,16 +55,17 @@ class PriceUpdateService
         // This ensures that the drop is calculated from the latest highest price, rather than from the last purchase price.
         if (is_null($this->botRun->getReferencePrice()) || $this->botRun->getLastPrice() > $this->botRun->getReferencePrice()) {
             $this->botRun->setReferencePrice($this->botRun->getLastPrice());
-            Log::info("New highest price, referencePrice set to €{$this->botRun->getLastPrice()}");
+            Log::info("New reference price, referencePrice set to €{$this->botRun->getLastPrice()}");
         }
         //For a new bot; the first buy happens when the price set by the user is reached
         if (BotTransaction::where('trading_bot_id', $this->botId)->doesntExist()) {
-            if ($this->bot->getStartBuy() <= $this->botRun->getLastPrice()) {
+            if (abs(floatval($this->bot->getStartBuy()) - floatval($this->botRun->getLastPrice())) <= floatval($this->botRun->getLastPrice()) * 0.005) {
                 Log::info("✅ The first buy has been reached.");
                 $this->placeBuyOrder($this->bot->getTradeSize(), $this->botRun->getLastPrice());
-            }
+            } else {
             Log::info("⛔ The first buy has not been reached.");
             return;
+            }
         }
 
         // Start check for sell conditions
@@ -113,17 +114,19 @@ class PriceUpdateService
 
         Log::info("📉 Cumulative drop: " . round($cumulativeDrop, 2) . "% (Ref: €{$this->botRun->getReferencePrice()}, Current: €{$this->botRun->getLastPrice()})");
 
-        if (
-            $cumulativeDrop >= $this->bot->getDropThreshold() &&
-            $this->botRun->getOpenTradeVolume() + $this->bot->getTradeSize() <= $this->botRun->getWorkbudget()
-        ) {
-            /* //check if the distance to the top of the chart is bigger then the limit set by the user, if it is set.
+        if ( $cumulativeDrop >= $this->bot->getDropThreshold() &&
+            $this->botRun->getOpenTradeVolume() + $this->bot->getTradeSize() <= $this->botRun->getWorkbudget()) {
+            //check if the distance to the top of the chart(last 7 days) is bigger then the limit set by the user, if it is set.
             if ($this->bot->getTopEdge() !== null && $this->bot->getTopEdge() !== 0){
+                if ($this->botRun->getTop() === null || $this->botRun->getTop() == 0) {
+                    Log::warning("⚠️ Invalid top value. Buy order cannot be placed.");
+                    return;
+                }
                 if ($this->bot->getTopEdge() > (($this->botRun->getTop() - $this->botRun->getLastPrice()) /$this->botRun->getTop())*100){
                     Log::info("⚠️ the current price is too close to the top, the order can not be placed. Current Top: {$this->botRun->getTop()}" );
                     return;
                 }
-            }*/
+            }
 
             Log::info("✅ Drop threshold reached, Buy is being executed.");
             $this->placeBuyOrder($this->bot->getTradeSize(), $this->botRun->getLastPrice());
@@ -170,13 +173,13 @@ class PriceUpdateService
         $this->botRun->setOpenTradeVolume($this->botRun->getOpenTradeVolume() - $this->bot->getTradeSize());
 
         if ($this->bot->getDryRun()) {
-            $sellAmount = $trade->volume * (1 + ($profitGain / 100));
+            $sellAmount = ($trade->volume * (1 + ($profitGain / 100))) * 0.9975; // 0.9975 is to take in account the 0.25% fee percentage on Kraken on limit sell orders
             $trade->update([
                 'sold' => true,
                 'sell_amount' => $sellAmount,
                 'sold_at' => now(),
             ]);
-            $profit = $sellAmount - $trade->volume;
+            $profit = $sellAmount - ($trade->volume * 1.0025); // 1.0025 is to take in account the 0.25% fee percentage on Kraken on limit buy orders
             $this->botRun->setProfit($profit);
             //If accumulate is set, the profit is added to the workbudget
             if ($this->bot->getAccumulate()) {
