@@ -15,7 +15,8 @@ class TradingBot extends Model
         'budget',
         'accumulate',
         'top_edge',
-        'stop_loss',
+        'bottom',
+        'peak',
         'dry_run',
         'status',
         'last_price'
@@ -30,7 +31,8 @@ class TradingBot extends Model
         'budget' => 'decimal:8',
         'accumulate' => 'boolean',
         'top_edge' => 'decimal:2',
-        'stop_loss' => 'decimal:2',
+        'bottom' => 'decimal:8',
+        'peak' => 'decimal:8',
         'dry_run' => 'boolean',
         'last_price' => 'decimal:8',
     ];
@@ -47,7 +49,7 @@ class TradingBot extends Model
         return $this->hasOne(BotRun::class, 'bot_id');
     }
 
-// Getters
+    // Getters
     public function getBotId(): int
     {
         return (int) $this->id;
@@ -93,9 +95,14 @@ class TradingBot extends Model
         return $this->top_edge !== null ? (float) $this->top_edge : null;
     }
 
-    public function getStopLoss(): ?float
+    public function getBottom(): ?float
     {
-        return $this->stop_loss !== null ? (float) $this->stop_loss : null;
+        return $this->bottom !== null ? (float) $this->bottom : null;
+    }
+
+    public function getPeak(): ?float
+    {
+        return $this->peak !== null ? (float) $this->peak : null;
     }
 
     public function getDryRun(): bool
@@ -157,9 +164,15 @@ class TradingBot extends Model
         $this->save();
     }
 
-    public function setStopLoss(?float $stopLoss): void
+    public function setBottom(?float $bottom): void
     {
-        $this->stop_loss = $stopLoss;
+        $this->bottom = $bottom;
+        $this->save();
+    }
+
+    public function setPeak(?float $peak): void
+    {
+        $this->peak = $peak;
         $this->save();
     }
 

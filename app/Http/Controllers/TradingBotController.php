@@ -28,7 +28,8 @@ class TradingBotController extends Controller
                 'budget'     => 'required|numeric|min:0.01',
                 'accumulate' => 'sometimes|boolean',
                 'topEdge'    => 'nullable|numeric|min:0.1',
-                'stopLoss'   => 'nullable|numeric|min:0'
+                'bottom'     => 'nullable|numeric|min:0.00000001',
+                'peak'       => 'nullable|numeric|min:0.00000001',
             ]);
 
             $bot = $this->tradingBotService->createBot($validated);

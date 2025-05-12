@@ -39,7 +39,7 @@ export function subscribeToPair(pair, onMessageCallback, interval = 1) {
     });
 
     const lastData = {};
-    krakenWs.on('message', (message) => {
+    krakenWs.on('message', async (message) => {
         try {
             const data = JSON.parse(message);
 
@@ -53,7 +53,7 @@ export function subscribeToPair(pair, onMessageCallback, interval = 1) {
                     lastData[pair] = close;
                     console.log(`📡 lastData ${lastData[pair]}`);
 
-                    const maxPrice = updatePriceHistory(pair, high);
+                    const maxPrice = await updatePriceHistory(pair, high);
                     console.log(`📈 Current Max Price: ${maxPrice}`);
 
                     subscriptions[pair].bots.forEach(botId => {

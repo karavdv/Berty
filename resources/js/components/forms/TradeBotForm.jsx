@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSignals } from "@preact/signals-react/runtime";
-import { selectedCurrency, selectedPair, availablePairs, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, stopLoss, showOverviewPage, errors } from "../../components/Signals.js";
+import { selectedCurrency, selectedPair, availablePairs, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, bottom, peak, showOverviewPage, errors } from "../../components/Signals.js";
 import { CurrencySelector } from "../forms/utils/CurrencySelector";
 import { CurrencyPairSelector } from "../forms/utils/CurrencyPairSelector.jsx";
 import { handleNumberInput } from "../forms/utils/handleNumberInput.js";
@@ -47,8 +47,11 @@ export const TradeBotForm = () => {
         if (topEdge.value && topEdge.value < 0) {
             formErrors.topEdge = "Top edge percentage cannot be negative.";
         }
-        if (stopLoss.value && stopLoss.value < 0) {
-            formErrors.stopLoss = "Stop loss percentage cannot be negative.";
+        if (bottom.value && bottom.value <= 0) {
+            formErrors.bottom = "Minimum marketprice cannot be negative or 0.";
+        }
+        if (peak.value && peak.value <= 0) {
+            formErrors.peak = "Maximum marketprice cannot be negative or 0.";
         }
 
         if (Object.keys(formErrors).length > 0) {
@@ -186,21 +189,33 @@ export const TradeBotForm = () => {
                         {errors.value?.topEdge && <p className="error-message">{errors.value.topEdge}</p>}
                     </div>
 
-                    {/* Stop Loss Input */}
+                    {/* Stop bot top and bottom */}
                     <div className="analysis form-group">
-                        <label htmlFor="stopLoss">Stop Loss - in % (optional)</label>
-                        <span className='small'>realise how volatile the market can be. Often the best strategy is patience. But you can also work with a limit. If the price drops by this % from your buy price, the bot will automatically sell to minimize losses.</span>
+                    <span className='small'>For safety you can give a minimum and maximum marketprice at which you want the bot to stop. So the bot will stop buying if the price goes above the maximum price or below the minimum price. The trades that are already made will still be sold at the set percentage. </span>
+                        <label htmlFor="bottom">Minimum marketprice (optional)</label>
                         <input
                             type="number"
                             step="any"
                             inputMode="decimal"
-                            id="stopLoss"
-                            name="stopLoss"
-                            placeholder="Enter a percentage to auto-sell to minimise losses"
-                            value={stopLoss.value}
-                            onChange={handleNumberInput((val) => (stopLoss.value = val))}
+                            id="bottom"
+                            name="bottom"
+                            placeholder="Enter a minimum marketprice below which you don't want to buy."
+                            value={bottom.value}
+                            onChange={handleNumberInput((val) => (bottom.value = val))}
                         />
-                        {errors.value?.stopLoss && <p className="error-message">{errors.value.stopLoss}</p>}
+                        {errors.value?.bottom && <p className="error-message">{errors.value.bottom}</p>}
+                        <label htmlFor="peak">Maximum marketprice (optional)</label>
+                        <input
+                            type="number"
+                            step="any"
+                            inputMode="decimal"
+                            id="peak"
+                            name="peak"
+                            placeholder="Enter a maximum marketprice above which you don't want to buy."
+                            value={peak.value}
+                            onChange={handleNumberInput((val) => (peak.value = val))}
+                        />
+                        {errors.value?.peak && <p className="error-message">{errors.value.peak}</p>}
                     </div>
 
 

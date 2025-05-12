@@ -1,6 +1,6 @@
 import React from "react";
 import { useSignals } from "@preact/signals-react/runtime";
-import { selectedPair, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, stopLoss, showOverviewPage} from "../../components/Signals.js";
+import { selectedPair, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, bottom, peak, showOverviewPage} from "../../components/Signals.js";
 import '../../../css/TradeBotOverview.css';
 import { StartBotButton } from "./StartBotButton.jsx";
 
@@ -25,7 +25,8 @@ export const TradeBotOverview = () => {
                 <li>Max Budget: €{budget.value}</li>
                 <li>Accumulate Profit: {accumulate.value ? "Yes" : "No"}</li>
                 <li>Stay Below Top: {topEdge.value}%</li>
-                <li>Stop Loss: {stopLoss.value || "None"}</li>
+                <li>Bottom limit: {bottom.value || "None"}</li>
+                <li>Peak limit: {peak.value || "None"}</li>
             </ul>
 
             < StartBotButton/>

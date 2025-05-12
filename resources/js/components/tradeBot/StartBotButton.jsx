@@ -1,7 +1,7 @@
 import React from "react";
 import { useSignals } from "@preact/signals-react/runtime";
 import { useNavigate } from 'react-router-dom';
-import { selectedPair, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, stopLoss, showOverviewPage } from "../../components/Signals.js";
+import { selectedPair, tradeSize, drop, profit, startBuy, budget, accumulate, topEdge, bottom, peak, showOverviewPage } from "../../components/Signals.js";
 import '../../../css/TradeBotOverview.css';
 
 export const StartBotButton = () => {
@@ -22,7 +22,8 @@ export const StartBotButton = () => {
                     budget: parseFloat(budget.value),
                     accumulate: accumulate.value,
                     topEdge: topEdge.value ? parseFloat(topEdge.value) : null,
-                    stopLoss: stopLoss.value ? parseFloat(stopLoss.value) : null,
+                    bottom: bottom.value ? parseFloat(bottom.value) : null,
+                    peak: peak.value ? parseFloat(peak.value) : null,
                 }),
             });
 

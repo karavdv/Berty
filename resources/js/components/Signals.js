@@ -19,5 +19,6 @@ export const startBuy = signal("");
 export const budget = signal("");
 export const accumulate = signal(false);
 export const topEdge = signal("");
-export const stopLoss = signal("");
+export const bottom = signal("");
+export const peak = signal("");
 export const showOverviewPage = signal(false);

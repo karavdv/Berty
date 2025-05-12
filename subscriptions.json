@@ -30,7 +30,7 @@
         "_eventsCount": 3,
         "outputData": [
           {
-            "data": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: fjmOjGzpkwrVlFQcaE5aCg==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
+            "data": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: NqY+8qo9ahvc4CJkp/uehQ==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
             "encoding": "latin1"
           }
         ],
@@ -55,7 +55,7 @@
         "_headerSent": true,
         "_closed": false,
         "socket": null,
-        "_header": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: fjmOjGzpkwrVlFQcaE5aCg==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
+        "_header": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: NqY+8qo9ahvc4CJkp/uehQ==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
         "_keepAliveTimeout": 0,
         "method": "GET",
         "path": "/",
@@ -76,14 +76,6 @@
     ],
     "historicalData": [
       {
-        "day": 20176,
-        "maxPrice": "4.2003"
-      },
-      {
-        "day": 20177,
-        "maxPrice": "4.0559"
-      },
-      {
         "day": 20178,
         "maxPrice": "4.1245"
       },
@@ -102,6 +94,120 @@
       {
         "day": 20182,
         "maxPrice": "4.6411"
+      },
+      {
+        "day": 20183,
+        "maxPrice": "4.5475"
+      },
+      {
+        "day": 20184,
+        "maxPrice": "4.4061"
+      }
+    ]
+  },
+  "TRX/EUR": {
+    "websocket": {
+      "_events": {},
+      "_eventsCount": 4,
+      "_binaryType": "nodebuffer",
+      "_closeCode": 1006,
+      "_closeFrameReceived": false,
+      "_closeFrameSent": false,
+      "_closeMessage": {
+        "type": "Buffer",
+        "data": []
+      },
+      "_closeTimer": null,
+      "_errorEmitted": false,
+      "_extensions": {},
+      "_paused": false,
+      "_protocol": "",
+      "_readyState": 0,
+      "_receiver": null,
+      "_sender": null,
+      "_socket": null,
+      "_bufferedAmount": 0,
+      "_isServer": false,
+      "_redirects": 0,
+      "_autoPong": true,
+      "_url": "wss://ws.kraken.com/",
+      "_req": {
+        "_events": {},
+        "_eventsCount": 3,
+        "outputData": [
+          {
+            "data": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: XvrzTXZEMzyl1q65/6fjXQ==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
+            "encoding": "latin1"
+          }
+        ],
+        "outputSize": 222,
+        "writable": true,
+        "destroyed": false,
+        "_last": true,
+        "chunkedEncoding": false,
+        "shouldKeepAlive": true,
+        "maxRequestsOnConnectionReached": false,
+        "_defaultKeepAlive": true,
+        "useChunkedEncodingByDefault": false,
+        "sendDate": false,
+        "_removedConnection": false,
+        "_removedContLen": false,
+        "_removedTE": false,
+        "strictContentLength": false,
+        "_contentLength": 0,
+        "_hasBody": true,
+        "_trailer": "",
+        "finished": true,
+        "_headerSent": true,
+        "_closed": false,
+        "socket": null,
+        "_header": "GET / HTTP/1.1\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: XvrzTXZEMzyl1q65/6fjXQ==\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Extensions: permessage-deflate; client_max_window_bits\r\nHost: ws.kraken.com\r\n\r\n",
+        "_keepAliveTimeout": 0,
+        "method": "GET",
+        "path": "/",
+        "_ended": false,
+        "res": null,
+        "aborted": false,
+        "timeoutCb": null,
+        "upgradeOrConnect": false,
+        "parser": null,
+        "maxHeadersCount": null,
+        "reusedSocket": false,
+        "host": "ws.kraken.com",
+        "protocol": "https:"
+      }
+    },
+    "bots": [
+      22
+    ],
+    "historicalData": [
+      {
+        "day": 20178,
+        "maxPrice": "0.221997"
+      },
+      {
+        "day": 20179,
+        "maxPrice": "0.220900"
+      },
+      {
+        "day": 20180,
+        "maxPrice": "0.222286"
+      },
+      {
+        "day": 20181,
+        "maxPrice": "0.218490"
+      },
+      {
+        "day": 20182,
+        "maxPrice": "0.220000"
+      },
+      {
+        "day": 20183,
+        "maxPrice": "0.218100"
+      },
+      {
+        "day": 20184,
+        "maxPrice": "0.218911"
       }
     ]
   }

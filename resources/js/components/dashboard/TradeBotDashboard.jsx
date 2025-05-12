@@ -67,7 +67,8 @@ return (
           <p>Start buy: {bot.start_buy}</p>
           <p>Accumulate: {bot.accumulate ? 'Yes' : 'No'}</p>
           <p>Top: {bot.top_edge ?? 'N/A'}%</p>
-          <p>Stop-loss: {bot.stop_loss ?? 'N/A'}</p>
+          <p>Bottom limit: {bot.bottom ?? 'N/A'}</p>
+          <p>Peak limit: {bot.peak ?? 'N/A'}</p>
         </div>
         <h4>Trades</h4>
         {bot.trades && bot.trades.length > 0 ? (

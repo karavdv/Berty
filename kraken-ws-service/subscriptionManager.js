@@ -38,15 +38,25 @@ export function saveSubscriptions() {
     }
 }
 
-export function updatePriceHistory(pair, high) {
+export async function updatePriceHistory(pair, high) {
     const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
     const currentDay = Math.floor(currentTime / 86400); // Calculate the current day (days since epoch)
+    const sevenDaysAgo = currentDay - 7; // Calculate timestamp for 7 days ago
+
+    // Filter historical data to only include entries from the last 7 days
+    const dataArray = subscriptions[pair].historicalData;
+    console.log(`📈 Data array before filtering: ${JSON.stringify(dataArray)}`);
+
+    const recentData = dataArray.filter(entry => entry.day >= sevenDaysAgo);
+    console.log(`📈 Data array after filtering: ${JSON.stringify(recentData)}`);
+
+    subscriptions[pair].historicalData = recentData;
+    console.log(`📈 New price history for ${pair} after converting; ${JSON.stringify(subscriptions[pair].historicalData)}`);
 
     // Ensure historicalData exists for the pair
-    if (!subscriptions[pair].historicalData) {
-        (async () => {
-            await startHistoricalData(pair);
-        })();
+    if (!subscriptions[pair].historicalData || recentData.length < 7) {
+            subscriptions[pair].historicalData = await startHistoricalData(pair);
+            console.log(`📈 New price history made for ${pair} after empty or less than 7 check; ${JSON.stringify(subscriptions[pair].historicalData)}`);
     }
 
     // Find the entry for the current day
@@ -69,21 +79,11 @@ export function updatePriceHistory(pair, high) {
         console.log(`🆕 Added new max price for ${pair} on day ${currentDay}: ${high}`);
     }
 
-    // Calculate timestamp for 7 days ago
-    const sevenDaysAgo = currentDay - 7;
-
-    // Filter historical data to only include entries from the last 7 days
-    const dataArray = subscriptions[pair].historicalData;
-    console.log(`📈 Data array before filtering: ${JSON.stringify(dataArray)}`);
-
-    const recentData = dataArray.filter(entry => entry.day >= sevenDaysAgo);
-    console.log(`📈 Data array after filtering: ${JSON.stringify(recentData)}`);
-
-    subscriptions[pair].historicalData = recentData;
-    console.log(`📈 New price history for ${pair} after converting; ${JSON.stringify(subscriptions[pair].historicalData)}`);
+    const updatedData = subscriptions[pair].historicalData;
+    console.log(`📈 Updated price history for ${pair}: ${JSON.stringify(updatedData)}`);
 
     // Find the maximum price from the recent data
-    const maxPrice = Math.max(...recentData.map(entry => entry.maxPrice));
+    const maxPrice = Math.max(...updatedData.map(entry => entry.maxPrice));
     console.log(`📈 Recent max price for ${pair}: ${maxPrice}`);
 
     return maxPrice;

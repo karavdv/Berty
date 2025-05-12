@@ -19,7 +19,8 @@ class CreateTradingBotsTable extends Migration
             $table->decimal('budget', 15, 8);
             $table->boolean('accumulate')->default(false);
             $table->decimal('top_edge', 5, 2)->nullable();
-            $table->decimal('stop_loss', 5, 2)->nullable();
+            $table->decimal('bottom', 15, 8)->nullable();
+            $table->decimal('peak', 15, 8)->nullable();
             $table->boolean('dry_run')->default(true);
             $table->string('status')->default('active');
             $table->timestamps();
